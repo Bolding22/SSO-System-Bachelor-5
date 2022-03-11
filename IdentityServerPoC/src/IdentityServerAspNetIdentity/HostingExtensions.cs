@@ -15,13 +15,16 @@ internal static class HostingExtensions
     public static WebApplication ConfigureServices(this WebApplicationBuilder builder)
     {
         var migrationsAssembly = typeof(Program).GetTypeInfo().Assembly.GetName().Name;
-        const string connectionString = @"Data Source=Duende.IdentityServer.Quickstart.EntityFramework.db";
-
+        var connectionString1 = builder.Configuration.GetConnectionString("UserConnection");
+        ServerVersion svUser = ServerVersion.AutoDetect(connectionString1);
+        var connectionString2 = builder.Configuration.GetConnectionString("IdentityConnection");
+        ServerVersion svIdentityServer = ServerVersion.AutoDetect(connectionString2);
+        
         
         builder.Services.AddRazorPages();
 
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+            options.UseMySql(svUser));
 
         builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -41,12 +44,12 @@ internal static class HostingExtensions
             
             .AddConfigurationStore(options =>
             {
-                options.ConfigureDbContext = b => b.UseSqlite(connectionString,
+                options.ConfigureDbContext = b => b.UseMySql(svIdentityServer,
                     sql => sql.MigrationsAssembly(migrationsAssembly));
             })
             .AddOperationalStore(options =>
             {
-                options.ConfigureDbContext = b => b.UseSqlite(connectionString,
+                options.ConfigureDbContext = b => b.UseMySql(svIdentityServer,
                     sql => sql.MigrationsAssembly(migrationsAssembly));
             })
             .AddAspNetIdentity<ApplicationUser>();
