@@ -63,6 +63,7 @@ public static class Config
                 AllowedScopes = { "openid", "profile", "scope2" }
             },
             // machine to machine client (from quickstart 1)
+            // console client
             new Client
             {
                 ClientId = "client",
@@ -73,9 +74,10 @@ public static class Config
                 AllowedScopes = { "api1" }
             },
             // interactive ASP.NET Core Web App
+            // webclient
             new Client
             {
-                ClientId = "web",
+                ClientId = "webclient",
                 ClientSecrets = { new Secret("secret".Sha256()) },
 
                 AllowedGrantTypes = GrantTypes.Code,
