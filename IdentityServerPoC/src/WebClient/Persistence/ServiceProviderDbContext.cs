@@ -5,10 +5,10 @@ namespace WebClient.Persistence;
 
 public class ServiceProviderDbContext : DbContext
 {
-    public DbSet<User> Users;
-
     public ServiceProviderDbContext(DbContextOptions<ServiceProviderDbContext> options) : base(options)
     {
         
     }
+
+    public DbSet<User> Users { get; set; }
 }
