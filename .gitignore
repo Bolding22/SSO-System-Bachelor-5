@@ -364,4 +364,4 @@ fabric.properties
 appsettings.development.json
 appsettings.Development.json
 IdentityServerPoC/src/IdentityServerAspNetIdentity/appsettings.development.json
-IdentityServerPoC/src/IdentityServerAspNetIdentity/appsettings.development.json
+IdentityServerPoC/src/WebClient/appsettings.development.json
