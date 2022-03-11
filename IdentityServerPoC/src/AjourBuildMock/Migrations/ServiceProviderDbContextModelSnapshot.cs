@@ -2,7 +2,6 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebClient.Persistence;
 
@@ -11,17 +10,16 @@ using WebClient.Persistence;
 namespace WebClient.Migrations
 {
     [DbContext(typeof(ServiceProviderDbContext))]
-    [Migration("20220311111555_UserData")]
-    partial class UserData
+    partial class ServiceProviderDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "6.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("WebClient.Persistence.Models.User", b =>
+            modelBuilder.Entity("AjourBuildMock.Persistence.Models.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()

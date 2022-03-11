@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{4DB9A8D8-8BA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "src\Api\Api.csproj", "{2C86235A-05C2-4BF4-A546-F01F04D29A9C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebClient", "src\WebClient\WebClient.csproj", "{23C4BD1B-C4D6-40DA-8DFF-71641971C748}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AjourBuildMock", "src\AjourBuildMock\AjourBuildMock.csproj", "{23C4BD1B-C4D6-40DA-8DFF-71641971C748}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServerAspNetIdentity", "src\IdentityServerAspNetIdentity\IdentityServerAspNetIdentity.csproj", "{E81D2FC0-0344-4160-BCC6-DD85B178F38A}"
 EndProject
