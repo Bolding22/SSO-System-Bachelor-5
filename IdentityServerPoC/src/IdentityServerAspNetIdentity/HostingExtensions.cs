@@ -81,7 +81,8 @@ internal static class HostingExtensions
         }
         
         InitializeIdentityDatabase(app);
-
+        MigrateUserDb(app);
+        
         app.UseStaticFiles();
         app.UseRouting();
         app.UseIdentityServer();
@@ -92,6 +93,14 @@ internal static class HostingExtensions
 
         return app;
     }
+
+    private static async void MigrateUserDb(WebApplication app)
+    {
+        using var scope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
+        var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+        await context?.Database?.MigrateAsync();
+    }
+
     private static async void InitializeIdentityDatabase(IApplicationBuilder app)
     {
         using var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope();

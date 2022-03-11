@@ -83,6 +83,25 @@ namespace IdentityServerAspNetIdentity.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("IdentityServerAspNetIdentity.Models.UserAlias", b =>
+                {
+                    b.Property<Guid>("SystemUserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("SystemUserId");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("UserAliases");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -211,6 +230,13 @@ namespace IdentityServerAspNetIdentity.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("IdentityServerAspNetIdentity.Models.UserAlias", b =>
+                {
+                    b.HasOne("IdentityServerAspNetIdentity.Models.ApplicationUser", null)
+                        .WithMany("UserAliases")
+                        .HasForeignKey("ApplicationUserId");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -260,6 +286,11 @@ namespace IdentityServerAspNetIdentity.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("IdentityServerAspNetIdentity.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("UserAliases");
                 });
 #pragma warning restore 612, 618
         }
