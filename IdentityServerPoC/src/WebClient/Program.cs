@@ -1,5 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.EntityFrameworkCore;
+using WebClient.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +38,24 @@ builder.Services.AddAuthentication(options =>
 
         options.SaveTokens = true;
     });
+
+// Replace with your server version and type.
+// Use 'MariaDbServerVersion' for MariaDB.
+// Alternatively, use 'ServerVersion.AutoDetect(connectionString)'.
+// For common usages, see pull request #1233.
+var connectionString = builder.Configuration.GetConnectionString("ServiceProviderConnectionString");
+var serverVersion = ServerVersion.AutoDetect(connectionString);
+builder.Services.AddDbContext<ServiceProviderDbContext>(
+    optionsBuilder =>
+    {
+        optionsBuilder.UseMySql(connectionString, serverVersion);
+            // The following three options help with debugging, but should
+            // be changed or removed for production.
+            //.LogTo(Console.WriteLine, LogLevel.Information)
+            //.EnableSensitiveDataLogging()
+            //.EnableDetailedErrors();
+    }
+);
 
 var app = builder.Build();
 

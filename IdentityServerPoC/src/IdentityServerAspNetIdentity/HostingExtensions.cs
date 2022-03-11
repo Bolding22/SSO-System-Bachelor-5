@@ -15,16 +15,15 @@ internal static class HostingExtensions
     public static WebApplication ConfigureServices(this WebApplicationBuilder builder)
     {
         var migrationsAssembly = typeof(Program).GetTypeInfo().Assembly.GetName().Name;
-        var connectionString1 = builder.Configuration.GetConnectionString("UserConnection");
-        ServerVersion svUser = ServerVersion.AutoDetect(connectionString1);
-        var connectionString2 = builder.Configuration.GetConnectionString("IdentityConnection");
-        ServerVersion svIdentityServer = ServerVersion.AutoDetect(connectionString2);
-        
-        
+        var userConnectionString = builder.Configuration.GetConnectionString("UserConnection");
+        var serverVersionUser = ServerVersion.AutoDetect(userConnectionString);
+        var identityConnectionString = builder.Configuration.GetConnectionString("IdentityConnection");
+        var serverVersionIdentity = ServerVersion.AutoDetect(identityConnectionString);
+
         builder.Services.AddRazorPages();
 
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseMySql(svUser));
+            options.UseMySql(userConnectionString, serverVersionUser));
 
         builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -44,13 +43,16 @@ internal static class HostingExtensions
             
             .AddConfigurationStore(options =>
             {
-                options.ConfigureDbContext = b => b.UseMySql(svIdentityServer,
+                options.ConfigureDbContext = b => b.UseMySql(identityConnectionString, serverVersionIdentity,
                     sql => sql.MigrationsAssembly(migrationsAssembly));
             })
             .AddOperationalStore(options =>
             {
-                options.ConfigureDbContext = b => b.UseMySql(svIdentityServer,
-                    sql => sql.MigrationsAssembly(migrationsAssembly));
+                options.ConfigureDbContext = b =>
+                {
+                    b.UseMySql(identityConnectionString, serverVersionIdentity,
+                        sql => sql.MigrationsAssembly(migrationsAssembly));
+                };
             })
             .AddAspNetIdentity<ApplicationUser>();
         
@@ -78,7 +80,7 @@ internal static class HostingExtensions
             app.UseDeveloperExceptionPage();
         }
         
-        InitializeDatabase(app);
+        InitializeIdentityDatabase(app);
 
         app.UseStaticFiles();
         app.UseRouting();
@@ -90,11 +92,11 @@ internal static class HostingExtensions
 
         return app;
     }
-    private static async void InitializeDatabase(IApplicationBuilder app)
+    private static async void InitializeIdentityDatabase(IApplicationBuilder app)
     {
         using var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope();
         
-        serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
+        await serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.MigrateAsync();
 
         var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
         await context.Database.MigrateAsync();
