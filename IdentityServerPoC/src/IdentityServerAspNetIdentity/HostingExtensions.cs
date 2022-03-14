@@ -5,6 +5,7 @@ using Duende.IdentityServer.EntityFramework.Mappers;
 using IdentityServerAspNetIdentity.Data;
 using IdentityServerAspNetIdentity.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -21,6 +22,9 @@ internal static class HostingExtensions
         var serverVersionIdentity = ServerVersion.AutoDetect(identityConnectionString);
 
         builder.Services.AddRazorPages();
+        //    .AddRazorPagesOptions(options => { 
+        //        options.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
+        //});
 
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseMySql(userConnectionString, serverVersionUser));
