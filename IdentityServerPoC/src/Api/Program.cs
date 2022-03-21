@@ -1,4 +1,5 @@
 using Microsoft.IdentityModel.Tokens;
+using Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,12 +16,13 @@ builder.Services.AddAuthentication("Bearer")
         };
     });
 
+const string apiScope = "ApiScope";
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("ApiScope", policy =>
+    options.AddPolicy(apiScope, policy =>
     {
         policy.RequireAuthenticatedUser();
-        policy.RequireClaim("scope", "api1");
+        policy.RequireClaim("scope", ApiScopeNames.Api);
     });
 });
 
@@ -43,6 +45,6 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers().RequireAuthorization("ApiScope");
+app.MapControllers().RequireAuthorization(apiScope);
 
 app.Run();

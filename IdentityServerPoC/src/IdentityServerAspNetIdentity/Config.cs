@@ -13,20 +13,10 @@ public static class Config
         {
             new IdentityResources.OpenId(),
             new IdentityResources.Profile(),
-            new()
-            {
-                Name = "verification",
-                UserClaims = new List<string> 
-                { 
-                    JwtClaimTypes.Email,
-                    JwtClaimTypes.EmailVerified,
-                    JwtClaimTypes.Address,
-                    JwtClaimTypes.WebSite
-                }
-            },
             new() 
             {
-                Name = "userAliases",
+                Name = IdentityResourceNames.UserAliases,
+                DisplayName = "User Aliases",
                 UserClaims = new List<string>()
                 {
                     JwtClaimTypes.PhoneNumberVerified
@@ -37,9 +27,7 @@ public static class Config
     public static IEnumerable<ApiScope> ApiScopes =>
         new ApiScope[]
         {
-            new ApiScope("scope1"),
-            new ApiScope("scope2"),
-            new ApiScope("api1", "My API")
+            new ApiScope(ApiScopeNames.Api, "Ajour Mock Api")
         };
 
     public static IEnumerable<Client> Clients =>
@@ -67,15 +55,9 @@ public static class Config
                 {
                     IdentityServerConstants.StandardScopes.OpenId,
                     IdentityServerConstants.StandardScopes.Profile,
-                    "verification",
-                    "api1",
-                    "userAliases"
-                },
-                Claims =
-                {
-                    new ClientClaim("customer_id", "123")
-                },
-                AlwaysSendClientClaims = true
+                    ApiScopeNames.Api,                      // The Ajour API
+                    IdentityResourceNames.UserAliases       // The user aliases for the systems
+                }
             }
         };
 }
