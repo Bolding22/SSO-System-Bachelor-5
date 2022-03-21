@@ -21,6 +21,14 @@ public static class Config
                     JwtClaimTypes.Address,
                     JwtClaimTypes.WebSite
                 }
+            },
+            new() 
+            {
+                Name = "userAliases",
+                UserClaims = new List<string>()
+                {
+                    
+                }
             }
         };
 
