@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
+using Shared;
 using WebClient.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,7 +21,7 @@ builder.Services.AddAuthentication(options =>
     {
         options.Authority = "https://localhost:5001";
 
-        options.ClientId = "webclient";
+        options.ClientId = ClientIds.AjourServiceProvider;  // TODO: Should these be in a config file?
         options.ClientSecret = "secret";
         options.ResponseType = "code";
 
@@ -29,6 +30,7 @@ builder.Services.AddAuthentication(options =>
         options.Scope.Add("profile");
         
         options.Scope.Add("verification");
+        options.Scope.Add("userAliases");
         options.ClaimActions.MapJsonKey("email_verified", "email_verified");
         
         options.Scope.Add("api1");

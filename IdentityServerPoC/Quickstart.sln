@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AjourBuildMock", "src\Ajour
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServerAspNetIdentity", "src\IdentityServerAspNetIdentity\IdentityServerAspNetIdentity.csproj", "{E81D2FC0-0344-4160-BCC6-DD85B178F38A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "src\Shared\Shared.csproj", "{4B8764FE-83AB-4D60-929D-8C25CC7220C8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,10 +34,15 @@ Global
 		{E81D2FC0-0344-4160-BCC6-DD85B178F38A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E81D2FC0-0344-4160-BCC6-DD85B178F38A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E81D2FC0-0344-4160-BCC6-DD85B178F38A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B8764FE-83AB-4D60-929D-8C25CC7220C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B8764FE-83AB-4D60-929D-8C25CC7220C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B8764FE-83AB-4D60-929D-8C25CC7220C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B8764FE-83AB-4D60-929D-8C25CC7220C8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{2C86235A-05C2-4BF4-A546-F01F04D29A9C} = {4DB9A8D8-8BA5-4E68-89CE-7EA81A698160}
 		{23C4BD1B-C4D6-40DA-8DFF-71641971C748} = {4DB9A8D8-8BA5-4E68-89CE-7EA81A698160}
 		{E81D2FC0-0344-4160-BCC6-DD85B178F38A} = {4DB9A8D8-8BA5-4E68-89CE-7EA81A698160}
+		{4B8764FE-83AB-4D60-929D-8C25CC7220C8} = {4DB9A8D8-8BA5-4E68-89CE-7EA81A698160}
 	EndGlobalSection
 EndGlobal

@@ -1,6 +1,8 @@
 ﻿using Duende.IdentityServer;
 using Duende.IdentityServer.Models;
 using IdentityModel;
+using Shared;
+using IdentityResources = Duende.IdentityServer.Models.IdentityResources;
 
 namespace IdentityServerAspNetIdentity;
 
@@ -47,7 +49,7 @@ public static class Config
             // webclient
             new Client
             {
-                ClientId = "webclient",
+                ClientId = ClientIds.AjourServiceProvider,
                 ClientName = "Ajour Service Provider Mock",
                 ClientSecrets = { new Secret("secret".Sha256()) },
 
