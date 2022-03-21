@@ -27,7 +27,10 @@ internal static class HostingExtensions
         //});
 
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseMySql(userConnectionString, serverVersionUser));
+        {
+            options.UseMySql(userConnectionString, serverVersionUser, 
+                optionsBuilder => optionsBuilder.EnableRetryOnFailure());
+        });
 
         builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
