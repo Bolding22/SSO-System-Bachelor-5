@@ -117,6 +117,7 @@ internal static class HostingExtensions
         var clients = context.Clients.Where(client => true);
         context.Clients.RemoveRange(clients);
         await context.SaveChangesAsync();
+        
         if (!context.Clients.Any())
         {
             foreach (var client in Config.Clients)
@@ -125,6 +126,10 @@ internal static class HostingExtensions
             }
             await context.SaveChangesAsync();
         }
+        
+        var identityResources = context.IdentityResources.Where(resource => true);
+        context.IdentityResources.RemoveRange(identityResources);
+        await context.SaveChangesAsync();
 
         if (!context.IdentityResources.Any())
         {
@@ -138,6 +143,7 @@ internal static class HostingExtensions
         var apiScopes = context.ApiScopes.Where(apiScope => true);
         context.ApiScopes.RemoveRange(apiScopes);
         await context.SaveChangesAsync();
+        
         if (!context.ApiScopes.Any())
         {
             foreach (var resource in Config.ApiScopes)
