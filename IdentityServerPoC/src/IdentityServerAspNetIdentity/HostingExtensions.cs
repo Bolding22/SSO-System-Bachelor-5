@@ -75,7 +75,7 @@ internal static class HostingExtensions
         return builder.Build();
     }
     
-    public static WebApplication ConfigurePipeline(this WebApplication app)
+    public static async Task<WebApplication> ConfigurePipeline(this WebApplication app)
     { 
         app.UseSerilogRequestLogging();
     
@@ -84,8 +84,8 @@ internal static class HostingExtensions
             app.UseDeveloperExceptionPage();
         }
         
-        InitializeIdentityDatabase(app);
-        MigrateUserDb(app);
+        await InitializeIdentityDatabase(app);
+        await MigrateUserDb(app);
         
         app.UseStaticFiles();
         app.UseRouting();
@@ -98,14 +98,14 @@ internal static class HostingExtensions
         return app;
     }
 
-    private static async void MigrateUserDb(WebApplication app)
+    private static async Task MigrateUserDb(WebApplication app)
     {
         using var scope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
         var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
         await context?.Database?.MigrateAsync();
     }
 
-    private static async void InitializeIdentityDatabase(IApplicationBuilder app)
+    private static async Task InitializeIdentityDatabase(IApplicationBuilder app)
     {
         using var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope();
         
