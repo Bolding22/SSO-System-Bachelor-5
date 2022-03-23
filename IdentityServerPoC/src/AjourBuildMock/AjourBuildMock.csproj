@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.3">
       <PrivateAssets>all</PrivateAssets>
@@ -23,6 +24,31 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Shared\Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\Logon_files\ajourbim-hvidt-logo.png" />
+    <_ContentIncludedByDefault Remove="wwwroot\Logon_files\ajour_box_white.png" />
+    <_ContentIncludedByDefault Remove="wwwroot\Logon_files\ajour_white.png" />
+    <_ContentIncludedByDefault Remove="wwwroot\Logon_files\all.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\Logon_files\AllLogOn.min.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\Logon_files\AllLogOn.min.js.download" />
+    <_ContentIncludedByDefault Remove="wwwroot\Logon_files\AllLogOnJquery.min.js.download" />
+    <_ContentIncludedByDefault Remove="wwwroot\Logon_files\bootstrap.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\Logon_files\bootstrap.min.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\Logon_files\flag-icon.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\Logon_files\IEWarning.min.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\Logon_files\IEWarning.min.js.download" />
+    <_ContentIncludedByDefault Remove="wwwroot\Logon_files\index(1).html" />
+    <_ContentIncludedByDefault Remove="wwwroot\Logon_files\index.html" />
+    <_ContentIncludedByDefault Remove="wwwroot\Logon_files\jquery.slim.min.js.download" />
+    <_ContentIncludedByDefault Remove="wwwroot\Logon_files\open-sans.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\Logon_files\owl.carousel.min.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\Logon_files\owl.carousel.min.js.download" />
+    <_ContentIncludedByDefault Remove="wwwroot\Logon_files\owl.theme.default.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\Logon_files\slide.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\Logon_files\style.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\Logon_files\throbber.gif" />
   </ItemGroup>
 
 </Project>
