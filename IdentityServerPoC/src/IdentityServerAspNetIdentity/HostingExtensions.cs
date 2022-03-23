@@ -27,7 +27,8 @@ internal static class HostingExtensions
         //});
 
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseMySql(userConnectionString, serverVersionUser));
+            options.UseMySql(userConnectionString, serverVersionUser, 
+                optionsBuilder => optionsBuilder.EnableRetryOnFailure()));
 
         builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -48,14 +49,22 @@ internal static class HostingExtensions
             .AddConfigurationStore(options =>
             {
                 options.ConfigureDbContext = b => b.UseMySql(identityConnectionString, serverVersionIdentity,
-                    sql => sql.MigrationsAssembly(migrationsAssembly));
+                    sql =>
+                    {
+                        sql.MigrationsAssembly(migrationsAssembly);
+                        sql.EnableRetryOnFailure();
+                    });
             })
             .AddOperationalStore(options =>
             {
                 options.ConfigureDbContext = b =>
                 {
                     b.UseMySql(identityConnectionString, serverVersionIdentity,
-                        sql => sql.MigrationsAssembly(migrationsAssembly));
+                    sql => 
+                    {
+                        sql.MigrationsAssembly(migrationsAssembly);
+                        sql.EnableRetryOnFailure();
+                    });
                 };
             })
             .AddAspNetIdentity<ApplicationUser>();

@@ -19,7 +19,7 @@ builder.Services.AddAuthentication(options =>
     .AddCookie("Cookies")
     .AddOpenIdConnect("oidc", options =>
     {
-        options.Authority = "https://localhost:5001";
+        options.Authority = "https://localhost:5001";   // TODO: Authority URL should be kept in a config file
 
         options.ClientId = ClientIds.AjourServiceProvider;  // TODO: Should these be in a config file?
         options.ClientSecret = "secret";
