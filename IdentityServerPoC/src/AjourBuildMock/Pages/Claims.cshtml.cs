@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace WebClient.Pages;
 
@@ -10,6 +11,7 @@ public class Claims : PageModel
     {
         _logger = logger;
     }
+
     public void OnGet()
     {
         

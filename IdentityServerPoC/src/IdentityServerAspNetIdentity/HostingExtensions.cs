@@ -2,8 +2,10 @@ using System.Reflection;
 using Duende.IdentityServer;
 using Duende.IdentityServer.EntityFramework.DbContexts;
 using Duende.IdentityServer.EntityFramework.Mappers;
+using IdentityServerAspNetIdentity.ClaimHandling;
 using IdentityServerAspNetIdentity.Data;
 using IdentityServerAspNetIdentity.Models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -45,7 +47,7 @@ internal static class HostingExtensions
                 // see https://docs.duendesoftware.com/identityserver/v6/fundamentals/resources/
                 options.EmitStaticAudienceClaim = true;
             })
-            
+
             .AddConfigurationStore(options =>
             {
                 options.ConfigureDbContext = b => b.UseMySql(identityConnectionString, serverVersionIdentity,
@@ -60,14 +62,18 @@ internal static class HostingExtensions
                 options.ConfigureDbContext = b =>
                 {
                     b.UseMySql(identityConnectionString, serverVersionIdentity,
-                    sql => 
-                    {
-                        sql.MigrationsAssembly(migrationsAssembly);
-                        sql.EnableRetryOnFailure();
-                    });
+                        sql =>
+                        {
+                            sql.MigrationsAssembly(migrationsAssembly);
+                            sql.EnableRetryOnFailure();
+                        });
                 };
             })
-            .AddAspNetIdentity<ApplicationUser>();
+            .AddAspNetIdentity<ApplicationUser>()
+            // Handles claims
+            .AddProfileService<ProfileService>();
+        
+        builder.Services.AddTransient<IClaimsTransformation, ClaimsTransformation>();
         
         builder.Services.AddAuthentication()
             .AddGoogle(options =>

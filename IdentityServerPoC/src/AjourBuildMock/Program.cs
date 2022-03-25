@@ -31,8 +31,8 @@ builder.Services.AddAuthentication(options =>
         options.Scope.Clear();
         options.Scope.Add("openid");
         options.Scope.Add("profile");
-        
         options.Scope.Add(IdentityResourceNames.UserAliases);
+        options.ClaimActions.MapJsonKey(AjourClaims.UserAlias, AjourClaims.UserAlias);
         options.ClaimActions.MapJsonKey("email_verified", "email_verified");
         
         options.Scope.Add(ApiScopeNames.Api);
