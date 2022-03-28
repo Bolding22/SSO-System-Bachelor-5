@@ -8,8 +8,8 @@ WORKDIR /src
 COPY ["src/AjourBuildMock/AjourBuildMock.csproj", "AjourBuildMock/"]
 COPY ["src/Shared/Shared.csproj", "Shared/"]
 RUN dotnet restore "AjourBuildMock/AjourBuildMock.csproj"
-COPY . .
-WORKDIR "/src/AjourBuildMock"
+COPY . /.
+WORKDIR "AjourBuildMock"
 RUN dotnet build "AjourBuildMock.csproj" -c Release -o /app/build
 
 FROM build AS publish
