@@ -10,10 +10,10 @@ COPY ["src/Shared/Shared.csproj", "Shared/"]
 RUN dotnet restore "IdentityServerAspNetIdentity/IdentityServerAspNetIdentity.csproj"
 COPY . /.
 WORKDIR "IdentityServerAspNetIdentity"
-RUN dotnet build "IdentityServerAspNetIdentity.csproj" -c Release -o /app/build
+RUN dotnet build "IdentityServerAspNetIdentity.csproj" -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "IdentityServerAspNetIdentity.csproj" -c Release -o /app/publish
+RUN dotnet publish "IdentityServerAspNetIdentity.csproj" -o /app/publish
 
 FROM base AS final
 WORKDIR /app

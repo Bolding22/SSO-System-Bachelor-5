@@ -7,12 +7,16 @@ using WebClient.Persistence;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
 builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AllowAnonymousToPage("/Index");
 });
 
 JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
+
+var authority = builder.Configuration["Authority"];
+Console.WriteLine(authority);
 
 builder.Services.AddAuthentication(options =>
     {
@@ -22,7 +26,7 @@ builder.Services.AddAuthentication(options =>
     .AddCookie("Cookies")
     .AddOpenIdConnect("oidc", options =>
     {
-        options.Authority = "https://localhost:5001";   // TODO: Authority URL should be kept in a config file
+        options.Authority = authority;
 
         options.ClientId = ClientIds.AjourServiceProvider;  // TODO: Should these be in a config file?
         options.ClientSecret = "secret";

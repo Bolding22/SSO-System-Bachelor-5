@@ -1,0 +1,57 @@
+﻿# Use root/example as user/password credentials
+version: '3.1'
+
+services:
+  
+  # Identity Provider
+  idp:
+    image: compose.idp:latest
+    build: 
+      context: .
+      dockerfile: "src/IdentityServerAspNetIdentity/Dockerfile"
+    depends_on:
+      - db
+    ports:
+      - "4001:80"
+      - "5001:443"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=1234
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    volumes:
+      - ~/.aspnet/https:/https:ro
+     
+  # Service Provider 
+  sp:
+    image: compose.sp:latest
+    build:
+      context: .
+      dockerfile: "src/AjourBuildMock/Dockerfile"
+    depends_on:
+      - db
+    ports:
+      - "4002:80"
+      - "5002:443"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=1234
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    
+  # DB for the Service Provider
+  db:
+    image: mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: example
+    ports:
+      - "3306:3306"
+        
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8080:8080"

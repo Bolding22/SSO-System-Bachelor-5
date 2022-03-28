@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using ILogger = Serilog.ILogger;
 
 namespace IdentityServerAspNetIdentity;
 
@@ -19,8 +20,10 @@ internal static class HostingExtensions
     {
         var migrationsAssembly = typeof(Program).GetTypeInfo().Assembly.GetName().Name;
         var userConnectionString = builder.Configuration.GetConnectionString("UserConnection");
+        Console.WriteLine(userConnectionString);
         var serverVersionUser = ServerVersion.AutoDetect(userConnectionString);
         var identityConnectionString = builder.Configuration.GetConnectionString("IdentityConnection");
+        Console.WriteLine(identityConnectionString);
         var serverVersionIdentity = ServerVersion.AutoDetect(identityConnectionString);
 
         builder.Services.AddRazorPages();
