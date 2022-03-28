@@ -17,9 +17,9 @@ public static class Config
             {
                 Name = IdentityResourceNames.UserAliases,
                 DisplayName = "User Aliases",
-                UserClaims = new List<string>()
+                UserClaims = 
                 {
-                    JwtClaimTypes.PhoneNumberVerified
+                    AjourClaims.UserAlias
                 }
             }
         };
