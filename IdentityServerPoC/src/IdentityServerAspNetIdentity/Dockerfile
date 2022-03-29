@@ -19,3 +19,9 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "IdentityServerAspNetIdentity.dll"]
+
+FROM final AS final-ssl
+# Remember to generate a certificate first
+RUN mkdir /usr/local/share/ca-certificates/extra
+ADD src/_Certificates/myCA.pem /usr/local/share/ca-certificates/extra/myCA.crt
+RUN update-ca-certificates
