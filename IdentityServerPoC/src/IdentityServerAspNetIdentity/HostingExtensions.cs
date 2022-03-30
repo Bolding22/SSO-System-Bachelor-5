@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Web;
+using Microsoft.IdentityModel.Logging;
+using Microsoft.IdentityModel.Validators;
 using Serilog;
 using ILogger = Serilog.ILogger;
 
@@ -25,6 +28,7 @@ internal static class HostingExtensions
         var identityConnectionString = builder.Configuration.GetConnectionString("IdentityConnection");
         Console.WriteLine(identityConnectionString);
         var serverVersionIdentity = ServerVersion.AutoDetect(identityConnectionString);
+        IdentityModelEventSource.ShowPII = true;
 
         builder.Services.AddRazorPages();
         //    .AddRazorPagesOptions(options => { 
@@ -86,8 +90,17 @@ internal static class HostingExtensions
                 // register your IdentityServer with Google at https://console.developers.google.com
                 // enable the Google+ API
                 // set the redirect URI to https://localhost:5001/signin-google
-                options.ClientId = "copy client ID from Google here";
-                options.ClientSecret = "copy client secret from Google here";
+                options.ClientId = "122550137758-5ri39h9qant940fd06uuko89bep3crk6.apps.googleusercontent.com";
+                options.ClientSecret = "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";
+            }).AddOpenIdConnect("AAD", "Azure AD Login", options =>
+            {
+                options.ClientId = "b295f200-59d5-49e3-958b-29c136ea3a6e";
+                options.ClientSecret = "cy~7Q~uJcfswV6uc6wIKmsYtF4dJiCoVWWUdG";
+                options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                options.Authority = "https://login.microsoftonline.com/common/v2.0/";
+                options.TokenValidationParameters.IssuerValidator = AadIssuerValidator.GetAadIssuerValidator(options.Authority, options.Backchannel).Validate;
+                options.ResponseType = "code";
+                options.CallbackPath = "/signin-aad";
             });
 
         return builder.Build();

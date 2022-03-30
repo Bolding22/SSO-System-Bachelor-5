@@ -367,3 +367,9 @@ IdentityServerPoC/src/IdentityServerAspNetIdentity/appsettings.development.json
 IdentityServerPoC/src/WebClient/appsettings.development.json
 
 IdentityServerPoC/src/IdentityServerAspNetIdentity/keys
+*.crt
+*.csr
+*.ext
+*.key
+*.pem
+*.srl
