@@ -12,8 +12,9 @@ public class Claims : PageModel
         _logger = logger;
     }
 
-    public void OnGet()
+    public async Task OnGet()
     {
-        
+        var userClaims = HttpContext.User.Claims;
+        var authenticateResult = await HttpContext.AuthenticateAsync();
     }
 }

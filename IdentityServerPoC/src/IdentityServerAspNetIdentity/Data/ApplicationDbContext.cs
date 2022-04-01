@@ -6,7 +6,7 @@ namespace IdentityServerAspNetIdentity.Data;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
-    private DbSet<UserAlias> UserAliases { get; set; }
+    public DbSet<UserAlias> UserAliases { get; set; }
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
     {

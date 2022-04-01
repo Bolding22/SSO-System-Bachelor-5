@@ -1,8 +1,7 @@
 ﻿<component name="ProjectRunConfigurationManager">
   <configuration default="false" name="All" type="CompoundRunConfigurationType">
-    <toRun name="Api" type="LaunchSettings" />
+    <toRun name="AjourBuildMock: WebClient" type="LaunchSettings" />
     <toRun name="IdentityServerAspNetIdentity: SelfHost" type="LaunchSettings" />
-    <toRun name="WebClient" type="LaunchSettings" />
     <method v="2" />
   </configuration>
 </component>

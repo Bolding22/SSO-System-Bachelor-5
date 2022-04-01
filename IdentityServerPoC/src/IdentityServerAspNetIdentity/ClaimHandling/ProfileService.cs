@@ -19,7 +19,11 @@ public class ProfileService : IProfileService
     /// <inheritdoc/>
     public async Task GetProfileDataAsync(ProfileDataRequestContext context)
     {
-        if (context.RequestedClaimTypes.Any())
+        var enumerable = context.RequestedResources.Resources.IdentityResources.SelectMany(resource => resource.UserClaims);
+        context.RequestedClaimTypes = enumerable;
+        var requestedClaimTypes = context.RequestedClaimTypes;
+
+        if (requestedClaimTypes.Any())
         {
             var user = await _userManager.GetUserAsync(context.Subject);
             var claims = await _userManager.GetClaimsAsync(user);
@@ -32,6 +36,7 @@ public class ProfileService : IProfileService
     /// <inheritdoc/>
     public Task IsActiveAsync(IsActiveContext context)
     {
+        context.IsActive = true;
         return Task.CompletedTask;
     }
 }
