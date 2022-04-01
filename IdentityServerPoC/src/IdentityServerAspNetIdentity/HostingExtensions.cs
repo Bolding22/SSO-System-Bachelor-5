@@ -83,7 +83,7 @@ internal static class HostingExtensions
         builder.Services.AddTransient<IClaimsTransformation, ClaimsTransformation>();
         
         builder.Services.AddAuthentication()
-            .AddGoogle(options =>
+            .AddGoogle("Google", "Sign in with Google" ,options =>
             {
                 options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
 
@@ -92,7 +92,7 @@ internal static class HostingExtensions
                 // set the redirect URI to https://localhost:5001/signin-google
                 options.ClientId = "122550137758-5ri39h9qant940fd06uuko89bep3crk6.apps.googleusercontent.com";
                 options.ClientSecret = "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";
-            }).AddOpenIdConnect("AAD", "Azure AD Login", options =>
+            }).AddOpenIdConnect("AAD", "Sign in with Azure AD / Microsoft", options =>
             {
                 options.ClientId = "b295f200-59d5-49e3-958b-29c136ea3a6e";
                 options.ClientSecret = "cy~7Q~uJcfswV6uc6wIKmsYtF4dJiCoVWWUdG";
@@ -106,7 +106,15 @@ internal static class HostingExtensions
                 options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
                 options.AppId = "697778028244682";
                 options.AppSecret = "1ff283e349b09a161a9bbe7e6dc54f90";
-            } );
+            }).AddOpenIdConnect("Slack", "Sign in with Slack", options =>
+            {
+                options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                options.ClientId = "3341690290481.3352834550928";
+                options.ClientSecret = "ed0d466b89409430e6785b1faa9502a7";
+                options.ResponseType = "code";
+                options.CallbackPath = "/signin-slack";
+                options.Authority = "https://slack.com";
+            });
 
         return builder.Build();
     }
