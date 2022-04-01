@@ -101,7 +101,12 @@ internal static class HostingExtensions
                 options.TokenValidationParameters.IssuerValidator = AadIssuerValidator.GetAadIssuerValidator(options.Authority, options.Backchannel).Validate;
                 options.ResponseType = "code";
                 options.CallbackPath = "/signin-aad";
-            });
+            }).AddFacebook("Facebook", "Sign in with Facebook", options =>
+            {
+                options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                options.AppId = "697778028244682";
+                options.AppSecret = "1ff283e349b09a161a9bbe7e6dc54f90";
+            } );
 
         return builder.Build();
     }

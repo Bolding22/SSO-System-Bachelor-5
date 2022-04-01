@@ -10,6 +10,7 @@
     <PackageReference Include="Duende.IdentityServer.AspNetIdentity" Version="6.0.4" />
     <PackageReference Include="Duende.IdentityServer.EntityFramework" Version="6.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="6.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="6.0.3" />
 
 	<PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.3" />
 
