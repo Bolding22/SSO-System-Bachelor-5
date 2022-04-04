@@ -58,12 +58,7 @@ public static class Config
                     IdentityServerConstants.StandardScopes.Profile,
                     ApiScopeNames.Api,                      // The Ajour API
                     IdentityResourceNames.UserAliases       // The user aliases for the systems
-                },
-                Claims =
-                {
-                    new ClientClaim("list", "[1,1,1,1,1]", IdentityServerConstants.ClaimValueTypes.Json)
-                },
-                AlwaysSendClientClaims = true
+                }
             }
         };
 }

@@ -20,7 +20,6 @@ public class ProfileService : IProfileService
             context.AddRequestedClaims(context.Subject.Claims);
         }
         
-        context.IssuedClaims.Add(new Claim("test-claim", "test-value"));
         return Task.CompletedTask;
     }
 

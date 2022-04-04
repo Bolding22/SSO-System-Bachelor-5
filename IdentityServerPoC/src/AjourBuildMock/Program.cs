@@ -36,10 +36,7 @@ builder.Services.AddAuthentication(options =>
         options.ClientId = ClientIds.AjourServiceProvider;  // TODO: Should these be in a config file?
         options.ClientSecret = "secret";
         options.ResponseType = "code";
-
-        options.Scope.Clear();
-        options.Scope.Add("openid");
-        options.Scope.Add("profile");
+        
         options.Scope.Add(IdentityResourceNames.UserAliases);
         options.ClaimActions.MapJsonKey(AjourClaims.UserAlias, AjourClaims.UserAlias);
         options.ClaimActions.MapJsonKey("email_verified", "email_verified");
