@@ -73,7 +73,7 @@ jobs:
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: SSO-System-Bachelor-5/IdentityServerPoC
-          dockerfile: SSO-System-Bachelor-5/IdentityServerPoC/src/AjourBuildMock/Dockerfile
+          file: SSO-System-Bachelor-5/IdentityServerPoC/src/AjourBuildMock/Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
