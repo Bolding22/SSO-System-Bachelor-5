@@ -1,7 +1,9 @@
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Shared;
+using WebClient.Authorization;
 using WebClient.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +12,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages(options =>
 {
-    options.Conventions.AllowAnonymousToPage("/Index");
+    options.Conventions.AuthorizeFolder("/", "UserExists")
+        .AllowAnonymousToPage("/Index")
+        .AllowAnonymousToPage("/Signout");
+    options.Conventions.AuthorizePage("/Signout");
 });
 
 JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
@@ -47,6 +52,12 @@ builder.Services.AddAuthentication(options =>
         options.SaveTokens = true;
     });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("UserExists", policy => 
+        policy.Requirements.Add(new UserExistsRequirement(Guid.Parse("68C450CF-A13F-4957-990D-E27E5DB8BD7B"))));
+});
+
 // Replace with your server version and type.
 // Use 'MariaDbServerVersion' for MariaDB.
 // Alternatively, use 'ServerVersion.AutoDetect(connectionString)'.
@@ -64,6 +75,9 @@ builder.Services.AddDbContext<ServiceProviderDbContext>(
             //.EnableDetailedErrors();
     }
 );
+
+// Uses user alias to authorize users
+builder.Services.AddSingleton<IAuthorizationHandler, UserExistsHandler>();
 
 var app = builder.Build();
 
