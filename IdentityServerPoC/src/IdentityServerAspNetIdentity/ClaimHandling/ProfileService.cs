@@ -26,7 +26,6 @@ public class ProfileService : IProfileService
     /// <inheritdoc/>
     public Task IsActiveAsync(IsActiveContext context)
     {
-        context.IsActive = true;
         return Task.CompletedTask;
     }
 }
