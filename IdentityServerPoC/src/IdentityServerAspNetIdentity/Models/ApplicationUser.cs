@@ -2,7 +2,7 @@
 // See LICENSE in the project root for license information.
 
 
-using System.ComponentModel.DataAnnotations;
+#nullable enable
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 
@@ -12,14 +12,6 @@ namespace IdentityServerAspNetIdentity.Models;
 public class ApplicationUser : IdentityUser
 {
     public ICollection<UserAlias> UserAliases { get; set; }
-}
-
-/// <summary>
-/// The representation of a user alias on other systems.
-/// </summary>
-public class UserAlias
-{
-    [Key]
-    public Guid SystemUserId { get; set; }
-    public Guid OrganizationId { get; set; }
+    public Guid? HomeDirectoryId { get; set; } = null;
+    public Directory? HomeDirectory { get; set; }
 }

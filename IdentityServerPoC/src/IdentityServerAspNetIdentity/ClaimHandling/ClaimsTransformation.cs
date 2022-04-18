@@ -35,7 +35,7 @@ public class ClaimsTransformation : IClaimsTransformation
                 .Include(applicationUser => applicationUser.UserAliases)
                 .Single(applicationUser => applicationUser.Id == userId);
         
-            var userAliases = user.UserAliases.ToDictionary(alias => alias.OrganizationId, alias => alias.SystemUserId);
+            var userAliases = user.UserAliases.ToDictionary(alias => alias.DirectoryId, alias => alias.SystemUserId);
             var userAliasesJson = JsonSerializer.Serialize(userAliases);
 
             var claimsIdentity = principal.Identities.First();
