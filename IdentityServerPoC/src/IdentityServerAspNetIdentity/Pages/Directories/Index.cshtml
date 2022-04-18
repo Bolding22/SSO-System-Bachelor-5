@@ -11,6 +11,11 @@
     else
     {
         <table class="table table-striped">
+            <thead>
+                <th>Name</th>
+                <th>Ownership</th>
+            </thead>
+            <tbody>
             @foreach (var directory in Model.View.Directories)
             {
                 <tr>
@@ -18,6 +23,7 @@
                     <td>@(directory.IsHomeDirectory ? "Home directory" : "Guest")</td>
                 </tr>
             }
+            </tbody>
         </table>
     }
 
