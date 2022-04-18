@@ -1,0 +1,24 @@
+﻿@page
+@using Microsoft.IdentityModel.Tokens
+@model IdentityServerAspNetIdentity.Pages.Organizations.Index
+
+<div>
+    <h1>Your part in organizations</h1>
+    @if (Model.View.Directories.IsNullOrEmpty())
+    {
+        <p>You are not a part of any directories...</p>
+    }
+    else
+    {
+        <table class="table table-striped">
+            @foreach (var directory in Model.View.Directories)
+            {
+                <tr>
+                    <td>@directory.Name</td>
+                    <td>@(directory.IsHomeDirectory ? "Home directory" : "Guest")</td>
+                </tr>
+            }
+        </table>
+    }
+
+</div>

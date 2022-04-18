@@ -1,12 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using IdentityServerAspNetIdentity.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Directory = IdentityServerAspNetIdentity.Models.Directory;
 
 namespace IdentityServerAspNetIdentity.Data;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
     public DbSet<UserAlias> UserAliases { get; set; }
+    public DbSet<Directory> Directories { get; set; }
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
     {

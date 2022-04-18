@@ -2,7 +2,6 @@
 // See LICENSE in the project root for license information.
 
 
-#nullable enable
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 
@@ -13,5 +12,5 @@ public class ApplicationUser : IdentityUser
 {
     public ICollection<UserAlias> UserAliases { get; set; }
     public Guid? HomeDirectoryId { get; set; } = null;
-    public Directory? HomeDirectory { get; set; }
+    public Directory HomeDirectory { get; set; }
 }
