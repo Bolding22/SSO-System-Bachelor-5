@@ -1,15 +1,13 @@
-﻿using System.Text.Json;
-using Duende.IdentityServer.Extensions;
+﻿using System.Security.Claims;
+using System.Text.Json;
 using IdentityServerAspNetIdentity.Data;
 using IdentityServerAspNetIdentity.Models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Shared;
 
-namespace IdentityServerAspNetIdentity.ClaimHandling;
-
-using Microsoft.AspNetCore.Authentication;
-using System.Security.Claims;
+namespace IdentityServerAspNetIdentity.Services.ClaimHandling;
 
 public class ClaimsTransformation : IClaimsTransformation
 {

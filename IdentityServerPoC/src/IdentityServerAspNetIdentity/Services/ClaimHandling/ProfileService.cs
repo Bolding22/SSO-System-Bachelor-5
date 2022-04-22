@@ -1,9 +1,7 @@
-﻿using System.Security.Claims;
-using Duende.IdentityServer.Models;
+﻿using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Services;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
-namespace IdentityServerAspNetIdentity.ClaimHandling;
+namespace IdentityServerAspNetIdentity.Services.ClaimHandling;
 
 public class ProfileService : IProfileService
 {

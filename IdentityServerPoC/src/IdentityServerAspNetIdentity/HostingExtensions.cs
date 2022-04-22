@@ -2,9 +2,10 @@ using System.Reflection;
 using Duende.IdentityServer;
 using Duende.IdentityServer.EntityFramework.DbContexts;
 using Duende.IdentityServer.EntityFramework.Mappers;
-using IdentityServerAspNetIdentity.ClaimHandling;
 using IdentityServerAspNetIdentity.Data;
 using IdentityServerAspNetIdentity.Models;
+using IdentityServerAspNetIdentity.Services;
+using IdentityServerAspNetIdentity.Services.ClaimHandling;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -79,7 +80,9 @@ internal static class HostingExtensions
             })
             .AddAspNetIdentity<ApplicationUser>()
             // Handles claims
-            .AddProfileService<ProfileService>();
+            .AddProfileService<ProfileService>()
+            // Handles redirects to wildcards
+            .AddRedirectUriValidator<RedirectUriValidator>();
         
         builder.Services.AddTransient<IClaimsTransformation, ClaimsTransformation>();
         
@@ -87,10 +90,6 @@ internal static class HostingExtensions
             .AddGoogle("Google", "Sign in with Google" ,options =>
             {
                 options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-
-                // register your IdentityServer with Google at https://console.developers.google.com
-                // enable the Google+ API
-                // set the redirect URI to https://localhost:5001/signin-google
                 options.ClientId = "122550137758-5ri39h9qant940fd06uuko89bep3crk6.apps.googleusercontent.com";
                 options.ClientSecret = "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";
             })
