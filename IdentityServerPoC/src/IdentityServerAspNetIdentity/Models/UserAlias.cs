@@ -12,9 +12,3 @@ public class UserAlias
     public Guid DirectoryId { get; set; }
     public Directory Directory { get; set; }
 }
-
-public class Directory
-{
-    public Guid Id { get; set; }
-    public string Name { get; set; }
-}

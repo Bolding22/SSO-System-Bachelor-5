@@ -13,4 +13,5 @@ public class ApplicationUser : IdentityUser
     public ICollection<UserAlias> UserAliases { get; set; }
     public Guid? HomeDirectoryId { get; set; } = null;
     public Directory HomeDirectory { get; set; }
+    public ICollection<Invite> Invites { get; set; }
 }
