@@ -4,7 +4,7 @@ namespace IdentityServerAspNetIdentity.Models;
 
 public class Invite
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
     public string FromId { get; set; }
     public ApplicationUser From { get; set; }
     public string ToId { get; set; }

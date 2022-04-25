@@ -24,13 +24,25 @@ public class Index : PageModel
 
     public async Task<IActionResult> OnGet()
     {
+        await BuildModelAsync();
+
+        return Page();
+    }
+
+    private async Task BuildModelAsync()
+    {
         var user = await _userManager.GetUserAsync(User);
 
         var directoryIds = user.UserAliases.Select(alias => alias.DirectoryId);
         var directories = _userDbContext.Directories.Where(directory => directoryIds.Contains(directory.Id));
 
-        View = new ViewModel(directories, user.HomeDirectoryId);
-
-        return Page();
+        View = new ViewModel()
+        {
+            Directories = directories.Select(directory => new ViewModel.DetailedDirectory()
+            {
+                Name = directory.Name,
+                IsHomeDirectory = directory.Id == user.HomeDirectoryId
+            })
+        };
     }
 }

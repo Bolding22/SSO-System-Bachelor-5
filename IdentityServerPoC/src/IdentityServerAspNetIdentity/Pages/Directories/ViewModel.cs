@@ -4,16 +4,7 @@ namespace IdentityServerAspNetIdentity.Pages.Directories;
 
 public class ViewModel
 {
-    public readonly IEnumerable<DetailedDirectory> Directories;
-
-    public ViewModel(IEnumerable<Directory> directories, Guid? homeDirectoryId)
-    {
-        Directories = directories.Select(directory => new DetailedDirectory()
-        {
-            Name = directory.Name,
-            IsHomeDirectory = directory.Id == homeDirectoryId
-        });
-    }
+    public IEnumerable<DetailedDirectory> Directories;
 
     public class DetailedDirectory
     {

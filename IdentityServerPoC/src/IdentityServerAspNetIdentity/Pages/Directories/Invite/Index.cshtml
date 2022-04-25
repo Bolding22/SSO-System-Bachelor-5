@@ -1,0 +1,40 @@
+﻿@page
+@model IdentityServerAspNetIdentity.Pages.Directories.Invite.Index
+
+<h1>Invite users</h1>
+<partial name="_ValidationSummary" />
+
+@if (Model.View.CurrentDirectoryId != Guid.Empty && Model.View.CurrentDirectoryId != null)
+{
+    <div>
+        <form asp-page="/Directories/Invite/Index">
+            <label for="email-invite">Enter the user's email to invite them</label>
+            <input id="email-invite" type="email" asp-for="Input.Email" autofocus/>
+            <button class="btn btn-primary">Add user</button>
+        </form>
+    
+        <h2>Pending invites</h2>
+        @if (Model.View.PendingInvites.Any())
+        {
+            <table>
+                @foreach (var invite in Model.View.PendingInvites)
+                {
+                    <tr>
+                        <td>@invite.InvitedUser.Email</td>
+                        <td>@invite.Created</td>
+                    </tr>
+                }
+            </table>
+        }
+        else
+        {
+            <p>No pending invites...</p>
+        }
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">
+        You need to have a home directory before you can invite other users
+    </div>
+}
