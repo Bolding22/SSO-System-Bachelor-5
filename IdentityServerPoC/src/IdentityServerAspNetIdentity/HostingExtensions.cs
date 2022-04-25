@@ -51,7 +51,7 @@ internal static class HostingExtensions
                 options.Events.RaiseInformationEvents = true;
                 options.Events.RaiseFailureEvents = true;
                 options.Events.RaiseSuccessEvents = true;
-                // options.IssuerUri = builder.Configuration["issuerUri"];
+                options.IssuerUri = builder.Configuration["issuerUri"];
 
                 // see https://docs.duendesoftware.com/identityserver/v6/fundamentals/resources/
                 options.EmitStaticAudienceClaim = true;
