@@ -19,19 +19,19 @@ public class ClaimsTransformation : IClaimsTransformation
         _userManager = userManager;
         _applicationDbContext = applicationDbContext;
     }
-    public Task<ClaimsPrincipal> TransformAsync(ClaimsPrincipal principal)
+    public async Task<ClaimsPrincipal> TransformAsync(ClaimsPrincipal principal)
     {
         if (!principal.HasClaim(claim => claim.Type == AjourClaims.UserAlias))
         {
             var userId = _userManager.GetUserId(principal);
             if (userId == null)
             {
-                return Task.FromResult(principal);
+                return principal;
             }
             
-            var user = _applicationDbContext.Users
+            var user = await _applicationDbContext.Users
                 .Include(applicationUser => applicationUser.UserAliases)
-                .Single(applicationUser => applicationUser.Id == userId);
+                .SingleAsync(applicationUser => applicationUser.Id == userId);
         
             var userAliases = user.UserAliases.ToDictionary(alias => alias.DirectoryId, alias => alias.SystemUserId);
             var userAliasesJson = JsonSerializer.Serialize(userAliases);
@@ -40,6 +40,6 @@ public class ClaimsTransformation : IClaimsTransformation
             claimsIdentity.AddClaim(new Claim(AjourClaims.UserAlias, userAliasesJson));
         }
 
-        return Task.FromResult(principal);
+        return principal;
     }
 }

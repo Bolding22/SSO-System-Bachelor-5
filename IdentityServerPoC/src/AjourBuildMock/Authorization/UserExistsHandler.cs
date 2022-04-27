@@ -43,7 +43,7 @@ public class UserExistsHandler : AuthorizationHandler<UserExistsRequirement>
         // This results in access not being granted to the newly added organization until a new token has been issued. 
         using var scope = _scopeFactory.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<ServiceProviderDbContext>();
-        var userExists = await dbContext.Users.AnyAsync(user => user.Id == userId);
+        var userExists = await dbContext.Users.AnyAsync(user => user.Id == userId);     // TODO: This could be expensive to do every time a page loads
         if (!userExists)
         {
             return;
