@@ -1,4 +1,4 @@
-﻿# Use root/example as user/password credentials
+# Use root/example as user/password credentials
 version: '3.1'
 
 services:
@@ -58,3 +58,10 @@ services:
     ports:
       - "8080:8080"
   
+  # Loadbalancer
+  loadbalancer:
+    build: ./loadbalancer
+    ports:
+      - "8888:443"
+    depends_on:
+      - idp

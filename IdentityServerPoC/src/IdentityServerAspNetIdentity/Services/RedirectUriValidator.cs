@@ -15,11 +15,9 @@ public class RedirectUriValidator : StrictRedirectUriValidator
     public override Task<bool> IsRedirectUriValidAsync(string requestedUri, Client client)
     {
         // Only letter are allowed in subdomain
-        var pattern = _hostEnvironment.IsDevelopment()
-            ? "^(https:\\/\\/)[a-zA-Z]+(\\.localhost:5002/signin-oidc)$"
-            : "^(https:\\/\\/)[a-zA-Z]+(\\.ajoursystem\\.net\\/signin-oidc)$";
-        
-        
+        var pattern = _hostEnvironment != null && _hostEnvironment.IsDevelopment()
+            ? "^(https:\\/\\/)([a-zA-Z]*\\.?)(localhost:5002\\/signin-oidc)$"
+            : "^(https:\\/\\/)([a-zA-Z]*\\.?)(ajoursystem\\.net\\/signin-oidc)$";
         var regex = new Regex(pattern);
         
         return Task.FromResult(regex.IsMatch(requestedUri));
