@@ -2,10 +2,14 @@
 @using Microsoft.AspNetCore.Authentication
 @model WebClient.Pages.Claims
 
+@{
+    var authenticateResult = await HttpContext.AuthenticateAsync();
+}
+
 <h2>Claims</h2>
 
 <dl>
-    @foreach (var claim in User.Claims)
+    @foreach (var claim in authenticateResult.Principal.Claims)
     {
         <dt>@claim.Type</dt>
         <dd>@claim.Value</dd>
@@ -15,7 +19,7 @@
 <h2>Properties</h2>
 
 <dl>
-    @foreach (var prop in (await HttpContext.AuthenticateAsync()).Properties.Items)
+    @foreach (var prop in authenticateResult.Properties.Items)
     {
         <dt>@prop.Key</dt>
         <dd>@prop.Value</dd>
