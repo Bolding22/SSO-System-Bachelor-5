@@ -22,28 +22,74 @@ internal static class HostingExtensions
 {
     public static WebApplication ConfigureServices(this WebApplicationBuilder builder)
     {
-        var migrationsAssembly = typeof(Program).GetTypeInfo().Assembly.GetName().Name;
-        var userConnectionString = builder.Configuration.GetConnectionString("UserConnection");
-        Console.WriteLine(userConnectionString);
-        var serverVersionUser = ServerVersion.AutoDetect(userConnectionString);
-        var identityConnectionString = builder.Configuration.GetConnectionString("IdentityConnection");
-        Console.WriteLine(identityConnectionString);
-        var serverVersionIdentity = ServerVersion.AutoDetect(identityConnectionString);
         IdentityModelEventSource.ShowPII = true;
 
         builder.Services.AddRazorPages();
-        //    .AddRazorPagesOptions(options => { 
-        //        options.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
-        //});
 
+        builder.SetupUserDataStores();
+        builder.SetupAjourIdentityServer();
+        builder.SetupExternalIdentityProviders();
+
+        return builder.Build();
+    }
+
+    private static void SetupExternalIdentityProviders(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddAuthentication()
+            .AddGoogle("Google", "Sign in with Google", options =>
+            {
+                options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                options.ClientId = "122550137758-5ri39h9qant940fd06uuko89bep3crk6.apps.googleusercontent.com";
+                options.ClientSecret = "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";
+            })
+            .AddOpenIdConnect("AAD", "Sign in with Azure AD / Microsoft", options =>
+            {
+                options.ClientId = "b295f200-59d5-49e3-958b-29c136ea3a6e";
+                options.ClientSecret = "cy~7Q~uJcfswV6uc6wIKmsYtF4dJiCoVWWUdG";
+                options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                options.Authority = "https://login.microsoftonline.com/common/v2.0/";
+                options.TokenValidationParameters.IssuerValidator = AadIssuerValidator
+                    .GetAadIssuerValidator(options.Authority, options.Backchannel).Validate;
+                options.ResponseType = "code";
+                options.CallbackPath = "/signin-aad";
+            })
+            .AddFacebook("Facebook", "Sign in with Facebook", options =>
+            {
+                options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                options.AppId = "697778028244682";
+                options.AppSecret = "1ff283e349b09a161a9bbe7e6dc54f90";
+            })
+            .AddOpenIdConnect("Slack", "Sign in with Slack", options =>
+            {
+                options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                options.ClientId = "3341690290481.3352834550928";
+                options.ClientSecret = "ed0d466b89409430e6785b1faa9502a7";
+                options.ResponseType = "code";
+                options.CallbackPath = "/signin-slack";
+                options.Authority = "https://slack.com";
+            });
+    }
+
+    private static void SetupUserDataStores(this WebApplicationBuilder builder)
+    {
+        var userConnectionString = builder.Configuration.GetConnectionString("UserConnection");
+        var serverVersionUser = ServerVersion.AutoDetect(userConnectionString);
+        
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseMySql(userConnectionString, serverVersionUser, 
+            options.UseMySql(userConnectionString, serverVersionUser,
                 optionsBuilder => optionsBuilder.EnableRetryOnFailure()));
 
         builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
+    }
 
+    private static void SetupAjourIdentityServer(this WebApplicationBuilder builder)
+    {
+        var migrationsAssembly = typeof(Program).GetTypeInfo().Assembly.GetName().Name;
+        var identityConnectionString = builder.Configuration.GetConnectionString("IdentityConnection");
+        var serverVersionIdentity = ServerVersion.AutoDetect(identityConnectionString);
+        
         builder.Services
             .AddIdentityServer(options =>
             {
@@ -56,7 +102,6 @@ internal static class HostingExtensions
                 // see https://docs.duendesoftware.com/identityserver/v6/fundamentals/resources/
                 options.EmitStaticAudienceClaim = true;
             })
-
             .AddConfigurationStore(options =>
             {
                 options.ConfigureDbContext = b => b.UseMySql(identityConnectionString, serverVersionIdentity,
@@ -85,43 +130,9 @@ internal static class HostingExtensions
             .AddRedirectUriValidator<RedirectUriValidator>();
         
         builder.Services.AddTransient<IClaimsTransformation, ClaimsTransformation>();
-        
-        builder.Services.AddAuthentication()
-            .AddGoogle("Google", "Sign in with Google" ,options =>
-            {
-                options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-                options.ClientId = "122550137758-5ri39h9qant940fd06uuko89bep3crk6.apps.googleusercontent.com";
-                options.ClientSecret = "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";
-            })
-            .AddOpenIdConnect("AAD", "Sign in with Azure AD / Microsoft", options =>
-            {
-                options.ClientId = "b295f200-59d5-49e3-958b-29c136ea3a6e";
-                options.ClientSecret = "cy~7Q~uJcfswV6uc6wIKmsYtF4dJiCoVWWUdG";
-                options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-                options.Authority = "https://login.microsoftonline.com/common/v2.0/";
-                options.TokenValidationParameters.IssuerValidator = AadIssuerValidator.GetAadIssuerValidator(options.Authority, options.Backchannel).Validate;
-                options.ResponseType = "code";
-                options.CallbackPath = "/signin-aad";
-            })
-            .AddFacebook("Facebook", "Sign in with Facebook", options =>
-            {
-                options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-                options.AppId = "697778028244682";
-                options.AppSecret = "1ff283e349b09a161a9bbe7e6dc54f90";
-            })
-            .AddOpenIdConnect("Slack", "Sign in with Slack", options =>
-            {
-                options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-                options.ClientId = "3341690290481.3352834550928";
-                options.ClientSecret = "ed0d466b89409430e6785b1faa9502a7";
-                options.ResponseType = "code";
-                options.CallbackPath = "/signin-slack";
-                options.Authority = "https://slack.com";
-            });
 
-        return builder.Build();
     }
-    
+
     public static async Task<WebApplication> ConfigurePipeline(this WebApplication app)
     { 
         app.UseSerilogRequestLogging();
