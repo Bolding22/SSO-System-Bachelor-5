@@ -1,7 +1,30 @@
 ﻿@page
-@using Microsoft.AspNetCore.Authentication
 @model IdentityServerAspNetIdentity.Pages.Directories.Invitations.Index
 
 <div>
+    <h1>Invitations</h1>
+    <table class="table table-striped">
+        <thead>
+        <th>Invited to</th>
+        <th>By user</th>
+        <th colspan="2">Sent at</th>
+        </thead>
+        <tbody>
+        @foreach (var invitation in Model.View.Invitations)
+        {
+            <tr>
+                <td>@invitation.OrganizationName</td>
+                <td>@invitation.FromEmail</td>
+                <td>@invitation.TimeSent.ToLocalTime()</td>
+                <td>
+                    <form method="post" class="row">
+                        <button asp-page="Index" asp-page-handler="Accept" asp-route-id="@invitation.OrganizationId" class="btn btn-primary col" style="margin-right: 10px">Accept</button>
+                        <button asp-page="Index" asp-page-handler="Decline" asp-route-id="@invitation.OrganizationId" class="btn btn-dark col">Decline</button>
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
     <p></p>
 </div>

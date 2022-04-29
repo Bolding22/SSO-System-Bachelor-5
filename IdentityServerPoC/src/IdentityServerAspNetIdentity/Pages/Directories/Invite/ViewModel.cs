@@ -5,7 +5,7 @@ namespace IdentityServerAspNetIdentity.Pages.Directories.Invite;
 
 public class ViewModel
 {
-    public Guid? CurrentDirectoryId { get; set; }
+    public Directory CurrentDirectory { get; set; }
     public IEnumerable<PendingInvite> PendingInvites { get; set; }
 }
 

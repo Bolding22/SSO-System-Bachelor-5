@@ -4,24 +4,25 @@
 <h1>Invite users</h1>
 <partial name="_ValidationSummary" />
 
-@if (Model.View.CurrentDirectoryId != Guid.Empty && Model.View.CurrentDirectoryId != null)
+@if (Model.View.CurrentDirectory != null)
 {
     <div>
+        <p>Invite to @Model.View.CurrentDirectory.Name</p>
         <form asp-page="/Directories/Invite/Index">
             <label for="email-invite">Enter the user's email to invite them</label>
             <input id="email-invite" type="email" asp-for="Input.Email" autofocus/>
             <button class="btn btn-primary">Add user</button>
         </form>
-    
+
         <h2>Pending invites</h2>
         @if (Model.View.PendingInvites.Any())
         {
-            <table>
+            <table class="table">
                 @foreach (var invite in Model.View.PendingInvites)
                 {
                     <tr>
                         <td>@invite.InvitedUser.Email</td>
-                        <td>@invite.Created</td>
+                        <td>@invite.Created.ToLocalTime()</td>
                     </tr>
                 }
             </table>

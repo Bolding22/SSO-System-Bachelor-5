@@ -36,15 +36,24 @@ public class Index : PageModel
 
         try
         {
+            var toUser = await _userManager.FindByEmailAsync(Input.Email);
+
+            if (toUser == null)
+            {
+                throw new ArgumentNullException(
+                    nameof(toUser.Email), "User does not exist");     
+                // Potential problem with other users using this to see which costumers are present in the system.
+                // Some costumers do not want this information to be available to others.
+            }
+            
             if (fromUser.HomeDirectoryId == null)
             {
                 throw new ArgumentNullException(
                     nameof(fromUser.HomeDirectory), "User needs a home directory to invite other users");
             }
-        
+
             var toDirectoryId = (Guid) fromUser.HomeDirectoryId;
 
-            var toUser = await _userManager.FindByEmailAsync(Input.Email);
 
             if (toUser.Id == fromUser.Id)
             {
@@ -74,10 +83,11 @@ public class Index : PageModel
         catch (ArgumentException e)
         {
             ModelState.AddModelError(string.Empty, e.Message);
+            await BuildModelAsync();
+            return Page();
         }
 
-        await BuildModelAsync();
-        return Page();
+        return RedirectToPage();
     }
 
     private async Task<bool> IsUserAlreadyAGuest(ApplicationUser toUser, Guid toDirectoryId)
@@ -97,10 +107,11 @@ public class Index : PageModel
         var user = await _userManager.GetUserAsync(User);
 
         var invites = _userDbContext.Invites.Where(invite => invite.ToDirectoryId == user.HomeDirectoryId);
+        var directory = await _userDbContext.Directories.SingleAsync(dir => dir.Id == user.HomeDirectoryId);
 
         View = new ViewModel()
         {
-            CurrentDirectoryId = user.HomeDirectoryId,
+            CurrentDirectory = directory,
             PendingInvites = invites.Select(invite => new PendingInvite()
             {
                 InvitedUser = invite.To,

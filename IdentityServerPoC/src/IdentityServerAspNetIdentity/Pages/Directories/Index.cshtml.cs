@@ -33,8 +33,14 @@ public class Index : PageModel
     {
         var user = await _userManager.GetUserAsync(User);
 
-        var directoryIds = user.UserAliases.Select(alias => alias.DirectoryId);
-        var directories = _userDbContext.Directories.Where(directory => directoryIds.Contains(directory.Id));
+        var directoryIds = user.UserAliases.Select(alias => alias.DirectoryId).ToList();
+        if (user.HomeDirectoryId != null)
+        {
+            directoryIds.Add((Guid) user.HomeDirectoryId);
+        }
+        
+        var directories = _userDbContext.Directories
+            .Where(directory => directoryIds.Contains(directory.Id));
 
         View = new ViewModel()
         {
