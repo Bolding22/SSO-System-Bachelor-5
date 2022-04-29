@@ -33,6 +33,21 @@ builder.Services.AddAuthentication(options =>
     {
         options.Authority = authority;
 
+        options.MetadataAddress = "https://idp/.well-known/openid-configuration";
+        options.RequireHttpsMetadata = false;
+
+        options.Events.OnRedirectToIdentityProvider = context =>
+        {
+            context.ProtocolMessage.IssuerAddress = "https://localhost:5001/connect/authorize";
+            return Task.CompletedTask;
+        };
+
+        options.Events.OnRedirectToIdentityProviderForSignOut = context =>
+        {
+            context.ProtocolMessage.IssuerAddress = "https://localhost:5001/connect/endsession";
+            return Task.CompletedTask;
+        };
+
         options.ClientId = ClientIds.AjourServiceProvider;  // TODO: Should these be in a config file?
         options.ClientSecret = "secret";
         options.ResponseType = "code";
