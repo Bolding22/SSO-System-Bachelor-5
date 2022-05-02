@@ -38,13 +38,13 @@ builder.Services.AddAuthentication(options =>
 
         options.Events.OnRedirectToIdentityProvider = context =>
         {
-            context.ProtocolMessage.IssuerAddress = "https://localhost:5001/connect/authorize";
+            context.ProtocolMessage.IssuerAddress = $"{builder.Configuration["Authority"]}/connect/authorize";
             return Task.CompletedTask;
         };
-
+        
         options.Events.OnRedirectToIdentityProviderForSignOut = context =>
         {
-            context.ProtocolMessage.IssuerAddress = "https://localhost:5001/connect/endsession";
+            context.ProtocolMessage.IssuerAddress = $"{builder.Configuration["Authority"]}/connect/endsession";
             return Task.CompletedTask;
         };
 
