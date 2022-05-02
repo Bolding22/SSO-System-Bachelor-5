@@ -8,16 +8,15 @@
 }
 
 <div class="nav-page">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
 
         <a href="~/" class="navbar-brand">
-            <img src="~/duende-logo.svg" class="icon-banner">
-            Duende IdentityServer
+            <img src="~/ajour_system_logo.svg" class="icon-banner" alt="Ajour's logo">
         </a>
 
         @if (!string.IsNullOrWhiteSpace(name))
         {
-            <ul class="navbar-nav mr-auto">
+            <ul class="navbar-nav mr-0">
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">@name <b class="caret"></b></a>
                     
@@ -28,5 +27,16 @@
             </ul>
         }
     
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Directories <b class="caret"></b></a>
+                
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" asp-page="/Directories/Index">View directories</a>
+                    <a class="dropdown-item" asp-page="/Directories/Invite/Index">Invite</a>
+                    <a class="dropdown-item" asp-page="/Directories/Invitations/Index">Invitations</a>
+                </div>
+          </li>
+        </ul>
     </nav>
 </div>
