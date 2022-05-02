@@ -19,38 +19,6 @@ services:
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/idp.pfx
     volumes:
       - ./src/_Certificates:/https:ro
-  
-  idp2:
-    image: compose.idp:latest
-    build: 
-      context: .
-      dockerfile: "src/IdentityServerAspNetIdentity/Dockerfile"
-    depends_on:
-      - db
-    restart: unless-stopped
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:443;http://+:80
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=1234
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/idp.pfx
-    volumes:
-      - ./src/_Certificates:/https:ro
-
-  idp3:
-    image: compose.idp:latest
-    build: 
-      context: .
-      dockerfile: "src/IdentityServerAspNetIdentity/Dockerfile"
-    depends_on:
-      - db
-    restart: unless-stopped
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:443;http://+:80
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=1234
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/idp.pfx
-    volumes:
-      - ./src/_Certificates:/https:ro
      
   # Service Provider 
   sp:
@@ -91,5 +59,3 @@ services:
       - "5001:443"
     depends_on:
       - idp
-      - idp2
-      - idp3
