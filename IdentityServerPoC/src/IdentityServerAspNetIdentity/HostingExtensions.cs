@@ -45,6 +45,10 @@ internal static class HostingExtensions
 
     private static void SetupExternalIdentityProviders(this WebApplicationBuilder builder)
     {
+        // configures the OpenIdConnect handlers to persist the state parameter into the server-side IDistributedCache.
+        // makes the external identity provider integration stateless so it works in horizontally scaled environment
+        builder.Services.AddOidcStateDataFormatterCache();
+        
         builder.Services.AddAuthentication()
             .AddGoogle("Google", "Sign in with Google", options =>
             {
