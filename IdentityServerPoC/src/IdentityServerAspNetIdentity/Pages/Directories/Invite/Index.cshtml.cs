@@ -107,7 +107,9 @@ public class Index : PageModel
         var user = await _userManager.GetUserAsync(User);
 
         var invites = _userDbContext.Invites.Where(invite => invite.ToDirectoryId == user.HomeDirectoryId);
-        var directory = await _userDbContext.Directories.SingleAsync(dir => dir.Id == user.HomeDirectoryId);
+        var directory = user.HomeDirectoryId != Guid.Empty
+            ? await _userDbContext.Directories.SingleOrDefaultAsync(dir => dir.Id == user.HomeDirectoryId)
+            : null;
 
         View = new ViewModel()
         {
