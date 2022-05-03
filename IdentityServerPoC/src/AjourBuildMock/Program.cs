@@ -33,7 +33,7 @@ builder.Services.AddAuthentication(options =>
     {
         options.Authority = authority;
 
-        options.MetadataAddress = "https://idp/.well-known/openid-configuration";
+        options.MetadataAddress = $"{builder.Configuration["IssuerUri"]}/.well-known/openid-configuration";
         options.RequireHttpsMetadata = false;
 
         options.Events.OnRedirectToIdentityProvider = context =>
