@@ -40,6 +40,19 @@ internal static class HostingExtensions
         builder.SetupAjourIdentityServer();
         builder.SetupExternalIdentityProviders();
 
+        if (builder.Environment.IsDevelopment())
+        {
+            // In development scenarios we don't want to run a cache server, so we just use in memory instead
+            builder.Services.AddDistributedMemoryCache();
+        }
+        else
+        {
+            builder.Services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = builder.Configuration.GetConnectionString("RedisCacheConnection");
+            });
+        }
+
         return builder.Build();
     }
 
@@ -144,9 +157,6 @@ internal static class HostingExtensions
             .AddRedirectUriValidator<RedirectUriValidator>();
         
         builder.Services.AddTransient<IClaimsTransformation, ClaimsTransformation>();
-        
-        
-
     }
 
     public static async Task<WebApplication> ConfigurePipeline(this WebApplication app)

@@ -49,6 +49,14 @@ services:
     ports:
       - "3306:3306"
   
+  # Redis Cache
+  cache:
+    image: redis
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+  
   # Loadbalancer
   loadbalancer:
     build: 
