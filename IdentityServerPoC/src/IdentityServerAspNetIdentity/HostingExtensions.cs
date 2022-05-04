@@ -10,6 +10,7 @@ using IdentityServerAspNetIdentity.Models;
 using IdentityServerAspNetIdentity.Services;
 using IdentityServerAspNetIdentity.Services.ClaimHandling;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
@@ -20,6 +21,7 @@ using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Validators;
 using MySqlConnector;
 using Serilog;
+using StackExchange.Redis;
 using ILogger = Serilog.ILogger;
 
 namespace IdentityServerAspNetIdentity;
@@ -52,12 +54,14 @@ internal static class HostingExtensions
         else
         {
             Log.Debug("Using Redis for distributed caching");
+            var redisConnection = builder.Configuration.GetConnectionString("RedisCacheConnection");
             builder.Services.AddStackExchangeRedisCache(options =>
             {
-                options.Configuration = builder.Configuration.GetConnectionString("RedisCacheConnection");
+                options.Configuration = redisConnection;
             });
-            
-            // builder.Services.AddDataProtection().Pers
+
+            builder.Services.AddDataProtection()
+                .PersistKeysToStackExchangeRedis(ConnectionMultiplexer.Connect(redisConnection));
         }
 
         return builder.Build();
