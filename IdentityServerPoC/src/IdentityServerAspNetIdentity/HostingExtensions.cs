@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using Duende.IdentityServer;
 using Duende.IdentityServer.EntityFramework.DbContexts;
 using Duende.IdentityServer.EntityFramework.Mappers;
@@ -17,6 +18,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Validators;
+using MySqlConnector;
 using Serilog;
 using ILogger = Serilog.ILogger;
 
@@ -40,17 +42,22 @@ internal static class HostingExtensions
         builder.SetupAjourIdentityServer();
         builder.SetupExternalIdentityProviders();
 
-        if (builder.Environment.IsDevelopment())
+        var isContainerized = Environment.GetEnvironmentVariable("AJOUR_IS_CONTAINERIZED");
+        if (false && isContainerized != null)
         {
             // In development scenarios we don't want to run a cache server, so we just use in memory instead
+            Log.Debug("Using local memory cache instead of server for distributed caching");
             builder.Services.AddDistributedMemoryCache();
         }
         else
         {
+            Log.Debug("Using Redis for distributed caching");
             builder.Services.AddStackExchangeRedisCache(options =>
             {
                 options.Configuration = builder.Configuration.GetConnectionString("RedisCacheConnection");
             });
+            
+            // builder.Services.AddDataProtection().Pers
         }
 
         return builder.Build();
@@ -226,12 +233,18 @@ internal static class HostingExtensions
         await serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.MigrateAsync();
 
         var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
-        await context.Database.MigrateAsync();
+        try
+        {
+            await context.Database.MigrateAsync();
+        }
+        catch (MySqlException e)
+        {
+            Log.Warning(e, "The migration failed, but is caught as it is likely due to multiple instances trying to migrate at once");
+        }
 
         var clients = context.Clients.Where(client => true);
         context.Clients.RemoveRange(clients);
-        await context.SaveChangesAsync();
-        
+
         if (!context.Clients.Any())
         {
             foreach (var client in Config.Clients)
@@ -243,7 +256,6 @@ internal static class HostingExtensions
         
         var identityResources = context.IdentityResources.Where(resource => true);
         context.IdentityResources.RemoveRange(identityResources);
-        await context.SaveChangesAsync();
 
         if (!context.IdentityResources.Any())
         {
@@ -256,8 +268,7 @@ internal static class HostingExtensions
 
         var apiScopes = context.ApiScopes.Where(apiScope => true);
         context.ApiScopes.RemoveRange(apiScopes);
-        await context.SaveChangesAsync();
-        
+
         if (!context.ApiScopes.Any())
         {
             foreach (var resource in Config.ApiScopes)

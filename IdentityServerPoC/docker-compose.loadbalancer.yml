@@ -11,12 +11,16 @@ services:
       dockerfile: "src/IdentityServerAspNetIdentity/Dockerfile"
     depends_on:
       - db
+      - cache
     restart: unless-stopped
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
       - ASPNETCORE_Kestrel__Certificates__Default__Password=1234
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/idp.pfx
+      - AJOUR_IS_CONTAINERIZED=true
+      - SERedis_ClientCertPassword=1234
+      - SERedis_ClientCertPfxPath=/https/redis.pfx
     volumes:
       - ./src/_Certificates:/https:ro
      
@@ -52,10 +56,14 @@ services:
   # Redis Cache
   cache:
     image: redis
-    restart: always
+    restart: on-failure
     ports:
       - '6379:6379'
-    command: redis-server --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+    volumes:
+      - ./loadbalancer/redis.conf:/tmp/conf/redis.conf:ro
+      - ./loadbalancer/certificates/redis:/tmp/certificates/redis:ro
+      - ./src/_Certificates/myCA.crt:/tmp/certificates/ca/myCA.crt:ro
+    command: redis-server /tmp/conf/redis.conf --loglevel debug
   
   # Loadbalancer
   loadbalancer:

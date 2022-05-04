@@ -17,6 +17,7 @@ subjectAltName = @alt_names
 [alt_names]
 DNS.1 = idp
 DNS.2 = localhost
+DNS.3 = 172.24.0.*
 EOF
 
 echo "*** Creating new certificate for Identity Provider ***"
@@ -43,7 +44,7 @@ subjectAltName = @alt_names
 [alt_names]
 DNS.1 = sp
 DNS.2 = localhost
-DNS.3 = sub.localhost
+DNS.3 = *.localhost
 EOF
 
 echo "*** Creating new certificate for Service Provider ***"
