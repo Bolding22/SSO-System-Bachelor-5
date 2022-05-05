@@ -10,11 +10,11 @@ services:
       context: .
       dockerfile: "src/IdentityServerAspNetIdentity/Dockerfile"
     depends_on:
-      - db
+      - db-idp
       - cache
     restart: unless-stopped
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=https://+:443;http://+:80
       - ASPNETCORE_Kestrel__Certificates__Default__Password=1234
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/idp.pfx
@@ -23,7 +23,7 @@ services:
       - SERedis_ClientCertPfxPath=/https/redis.pfx
     volumes:
       - ./src/_Certificates:/https:ro
-     
+  
   # Service Provider 
   sp:
     image: compose.sp:latest
@@ -31,7 +31,7 @@ services:
       context: .
       dockerfile: "src/AjourBuildMock/Dockerfile"
     depends_on:
-      - db
+      - db-sp
     restart: on-failure
     ports:
       - "4002:80"
@@ -50,8 +50,8 @@ services:
     restart: always
     environment:
       MARIADB_ROOT_PASSWORD: example
-    ports:
-      - "3306:3306"
+    volumes:
+      - idp-db-volume:/var/lib/mysql
     
     # DB for the Service Provider
   db-sp:
@@ -59,20 +59,18 @@ services:
     restart: always
     environment:
       MARIADB_ROOT_PASSWORD: example
-    ports:
-      - "3306:3306"
+    volumes:
+      - sp-db-volume:/var/lib/mysql
   
   # Redis Cache
   cache:
     image: redis
     restart: on-failure
-    ports:
-      - '6379:6379'
     volumes:
       - ./loadbalancer/redis.conf:/tmp/conf/redis.conf:ro
       - ./loadbalancer/certificates/redis:/tmp/certificates/redis:ro
       - ./src/_Certificates/myCA.crt:/tmp/certificates/ca/myCA.crt:ro
-    command: redis-server /tmp/conf/redis.conf --loglevel debug
+    command: redis-server /tmp/conf/redis.conf --loglevel warning
   
   # Loadbalancer
   loadbalancer:
@@ -84,3 +82,7 @@ services:
       - "5001:443"
     depends_on:
       - idp
+  
+volumes:
+  idp-db-volume:
+  sp-db-volume:
