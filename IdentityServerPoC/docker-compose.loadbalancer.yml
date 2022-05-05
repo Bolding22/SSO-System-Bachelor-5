@@ -45,7 +45,16 @@ services:
       - ./src/_Certificates:/https:ro
     
   # DB for the Service Provider
-  db:
+  db-idp:
+    image: mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: example
+    ports:
+      - "3306:3306"
+    
+    # DB for the Service Provider
+  db-sp:
     image: mariadb
     restart: always
     environment:
