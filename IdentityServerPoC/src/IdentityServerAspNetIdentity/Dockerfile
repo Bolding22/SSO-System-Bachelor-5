@@ -1,4 +1,6 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+RUN apt update
+RUN apt upgrade -y
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
