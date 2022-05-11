@@ -2,6 +2,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
+using AspNetCoreRateLimit;
+using AspNetCoreRateLimit.Redis;
 using Duende.IdentityServer;
 using Duende.IdentityServer.EntityFramework.DbContexts;
 using Duende.IdentityServer.EntityFramework.Mappers;
@@ -39,6 +41,14 @@ internal static class HostingExtensions
             options.ForwardedHeaders =
                 ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost;
         });
+        
+        builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection("IpRateLimiting"));
+        builder.Services.Configure<IpRateLimitPolicies>(builder.Configuration.GetSection("IpRateLimitPolicies"));
+        builder.Services.AddRedisRateLimiting();
+        // inject counter and rules distributed cache stores
+        builder.Services.AddSingleton<IIpPolicyStore, DistributedCacheIpPolicyStore>();
+        builder.Services.AddSingleton<IRateLimitCounterStore,DistributedCacheRateLimitCounterStore>();
+        builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
 
         builder.SetupUserDataStores();
         builder.SetupAjourIdentityServer();
@@ -170,6 +180,7 @@ internal static class HostingExtensions
     public static async Task<WebApplication> ConfigurePipeline(this WebApplication app)
     {
         app.UseForwardedHeaders();
+        app.UseIpRateLimiting();
         app.UseSerilogRequestLogging();
     
         if (app.Environment.IsDevelopment())
