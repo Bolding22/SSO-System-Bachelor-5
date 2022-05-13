@@ -378,3 +378,4 @@ IdentityServerPoC/src/IdentityServerAspNetIdentity/keys
 *.key
 *.pem
 *.srl
+IdentityServerPoC/src/IdentityServerAspNetIdentity/appsettings.json
