@@ -30,6 +30,8 @@ namespace IdentityServerAspNetIdentity;
 
 internal static class HostingExtensions
 {
+    private static bool _isContainerized;
+
     public static WebApplication ConfigureServices(this WebApplicationBuilder builder)
     {
         IdentityModelEventSource.ShowPII = true;
@@ -41,28 +43,32 @@ internal static class HostingExtensions
             options.ForwardedHeaders =
                 ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost;
         });
-        
-        builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection("IpRateLimiting"));
-        builder.Services.Configure<IpRateLimitPolicies>(builder.Configuration.GetSection("IpRateLimitPolicies"));
-        builder.Services.AddRedisRateLimiting();
-        // inject counter and rules distributed cache stores
-        builder.Services.AddSingleton<IIpPolicyStore, DistributedCacheIpPolicyStore>();
-        builder.Services.AddSingleton<IRateLimitCounterStore,DistributedCacheRateLimitCounterStore>();
-        builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
 
         builder.SetupUserDataStores();
         builder.SetupAjourIdentityServer();
         builder.SetupExternalIdentityProviders();
 
-        var isContainerized = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER");
-        if (isContainerized == "true")
+        _isContainerized = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
+        if (_isContainerized)
         {
             Log.Debug("Using Redis for distributed caching");
             var redisConnection = builder.Configuration.GetConnectionString("RedisCacheConnection");
+
+            var connectionMultiplexer = ConnectionMultiplexer.Connect(redisConnection);
+            builder.Services.AddSingleton<IConnectionMultiplexer>(_ => connectionMultiplexer);
+            
             builder.Services.AddStackExchangeRedisCache(options => { options.Configuration = redisConnection; });
 
             builder.Services.AddDataProtection()
-                .PersistKeysToStackExchangeRedis(ConnectionMultiplexer.Connect(redisConnection));
+                .PersistKeysToStackExchangeRedis(connectionMultiplexer);
+            
+            builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection("IpRateLimiting"));
+            builder.Services.Configure<IpRateLimitPolicies>(builder.Configuration.GetSection("IpRateLimitPolicies"));
+            builder.Services.AddRedisRateLimiting();
+            // inject counter and rules distributed cache stores
+            builder.Services.AddSingleton<IIpPolicyStore, DistributedCacheIpPolicyStore>();
+            builder.Services.AddSingleton<IRateLimitCounterStore,DistributedCacheRateLimitCounterStore>();
+            builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
         }
         else
         {
@@ -180,9 +186,11 @@ internal static class HostingExtensions
     public static async Task<WebApplication> ConfigurePipeline(this WebApplication app)
     {
         app.UseForwardedHeaders();
-        app.UseIpRateLimiting();
         app.UseSerilogRequestLogging();
-    
+        
+        if (_isContainerized)
+            app.UseIpRateLimiting();
+
         if (app.Environment.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
