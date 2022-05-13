@@ -7,20 +7,20 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["src/IdentityServerAspNetIdentity/IdentityServerAspNetIdentity.csproj", "IdentityServerAspNetIdentity/"]
+COPY ["src/IdentityServer/IdentityServer.csproj", "IdentityServer/"]
 COPY ["src/Shared/Shared.csproj", "Shared/"]
-RUN dotnet restore "IdentityServerAspNetIdentity/IdentityServerAspNetIdentity.csproj"
+RUN dotnet restore "IdentityServer/IdentityServer.csproj"
 COPY . /.
-WORKDIR "IdentityServerAspNetIdentity"
-RUN dotnet build "IdentityServerAspNetIdentity.csproj" -o /app/build
+WORKDIR "IdentityServer"
+RUN dotnet build "IdentityServer.csproj" -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "IdentityServerAspNetIdentity.csproj" -o /app/publish
+RUN dotnet publish "IdentityServer.csproj" -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "IdentityServerAspNetIdentity.dll"]
+ENTRYPOINT ["dotnet", "IdentityServer.dll"]
 
 FROM final AS final-ssl
 # Remember to generate a certificate first

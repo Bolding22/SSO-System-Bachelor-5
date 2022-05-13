@@ -8,7 +8,7 @@ services:
     image: compose.idp:latest
     build: 
       context: .
-      dockerfile: "src/IdentityServerAspNetIdentity/Dockerfile"
+      dockerfile: "src/IdentityServer/Dockerfile"
     depends_on:
       - db-idp
       - cache

@@ -3,7 +3,6 @@ using System;
 using IdentityServerAspNetIdentity.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,17 +10,16 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IdentityServerAspNetIdentity.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220418182455_UserOwnership")]
-    partial class UserOwnership
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "6.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("IdentityServerAspNetIdentity.Models.ApplicationUser", b =>
+            modelBuilder.Entity("IdentityServer.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
@@ -40,7 +38,7 @@ namespace IdentityServerAspNetIdentity.Data.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<Guid>("HomeDirectoryId")
+                    b.Property<Guid?>("HomeDirectoryId")
                         .HasColumnType("char(36)");
 
                     b.Property<bool>("LockoutEnabled")
@@ -90,7 +88,7 @@ namespace IdentityServerAspNetIdentity.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("IdentityServerAspNetIdentity.Models.Directory", b =>
+            modelBuilder.Entity("IdentityServer.Models.Directory", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -101,10 +99,39 @@ namespace IdentityServerAspNetIdentity.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Directory");
+                    b.ToTable("Directories");
                 });
 
-            modelBuilder.Entity("IdentityServerAspNetIdentity.Models.UserAlias", b =>
+            modelBuilder.Entity("IdentityServer.Models.Invite", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("FromId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<Guid>("ToDirectoryId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("ToId")
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FromId");
+
+                    b.HasIndex("ToDirectoryId");
+
+                    b.HasIndex("ToId");
+
+                    b.ToTable("Invites");
+                });
+
+            modelBuilder.Entity("IdentityServer.Models.UserAlias", b =>
                 {
                     b.Property<Guid>("SystemUserId")
                         .ValueGeneratedOnAdd()
@@ -253,24 +280,45 @@ namespace IdentityServerAspNetIdentity.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("IdentityServerAspNetIdentity.Models.ApplicationUser", b =>
+            modelBuilder.Entity("IdentityServer.Models.ApplicationUser", b =>
                 {
-                    b.HasOne("IdentityServerAspNetIdentity.Models.Directory", "HomeDirectory")
+                    b.HasOne("IdentityServer.Models.Directory", "HomeDirectory")
                         .WithMany()
-                        .HasForeignKey("HomeDirectoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("HomeDirectoryId");
 
                     b.Navigation("HomeDirectory");
                 });
 
-            modelBuilder.Entity("IdentityServerAspNetIdentity.Models.UserAlias", b =>
+            modelBuilder.Entity("IdentityServer.Models.Invite", b =>
                 {
-                    b.HasOne("IdentityServerAspNetIdentity.Models.ApplicationUser", null)
+                    b.HasOne("IdentityServer.Models.ApplicationUser", "From")
+                        .WithMany()
+                        .HasForeignKey("FromId");
+
+                    b.HasOne("IdentityServer.Models.Directory", "ToDirectory")
+                        .WithMany()
+                        .HasForeignKey("ToDirectoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("IdentityServer.Models.ApplicationUser", "To")
+                        .WithMany("Invites")
+                        .HasForeignKey("ToId");
+
+                    b.Navigation("From");
+
+                    b.Navigation("To");
+
+                    b.Navigation("ToDirectory");
+                });
+
+            modelBuilder.Entity("IdentityServer.Models.UserAlias", b =>
+                {
+                    b.HasOne("IdentityServer.Models.ApplicationUser", null)
                         .WithMany("UserAliases")
                         .HasForeignKey("ApplicationUserId");
 
-                    b.HasOne("IdentityServerAspNetIdentity.Models.Directory", "Directory")
+                    b.HasOne("IdentityServer.Models.Directory", "Directory")
                         .WithMany()
                         .HasForeignKey("DirectoryId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -290,7 +338,7 @@ namespace IdentityServerAspNetIdentity.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("IdentityServerAspNetIdentity.Models.ApplicationUser", null)
+                    b.HasOne("IdentityServer.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -299,7 +347,7 @@ namespace IdentityServerAspNetIdentity.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("IdentityServerAspNetIdentity.Models.ApplicationUser", null)
+                    b.HasOne("IdentityServer.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -314,7 +362,7 @@ namespace IdentityServerAspNetIdentity.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("IdentityServerAspNetIdentity.Models.ApplicationUser", null)
+                    b.HasOne("IdentityServer.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -323,15 +371,17 @@ namespace IdentityServerAspNetIdentity.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("IdentityServerAspNetIdentity.Models.ApplicationUser", null)
+                    b.HasOne("IdentityServer.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("IdentityServerAspNetIdentity.Models.ApplicationUser", b =>
+            modelBuilder.Entity("IdentityServer.Models.ApplicationUser", b =>
                 {
+                    b.Navigation("Invites");
+
                     b.Navigation("UserAliases");
                 });
 #pragma warning restore 612, 618

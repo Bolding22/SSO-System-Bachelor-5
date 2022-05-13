@@ -18,7 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\IdentityServerAspNetIdentity\IdentityServerAspNetIdentity.csproj" />
+      <ProjectReference Include="..\IdentityServer\IdentityServer.csproj" />
     </ItemGroup>
 
 </Project>
