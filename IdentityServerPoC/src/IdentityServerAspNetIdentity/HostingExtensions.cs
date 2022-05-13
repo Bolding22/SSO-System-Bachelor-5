@@ -188,7 +188,7 @@ internal static class HostingExtensions
         app.UseForwardedHeaders();
         app.UseSerilogRequestLogging();
         
-        if (_isContainerized)
+        if (false && _isContainerized)
             app.UseIpRateLimiting();
 
         if (app.Environment.IsDevelopment())
