@@ -90,8 +90,8 @@ internal static class HostingExtensions
             .AddGoogle("Google", "Sign in with Google", options =>
             {
                 options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-                options.ClientId = "122550137758-5ri39h9qant940fd06uuko89bep3crk6.apps.googleusercontent.com";
-                options.ClientSecret = "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";
+                options.ClientId = builder.Configuration["Google:ClientID"];
+                options.ClientSecret = builder.Configuration["Google:ClientSecret"];
             })
             .AddOpenIdConnect("AAD", "Sign in with Azure AD / Microsoft", options =>
             {
