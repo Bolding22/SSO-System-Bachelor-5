@@ -96,8 +96,8 @@ internal static class HostingExtensions
             })
             .AddOpenIdConnect("AAD", "Sign in with Azure AD / Microsoft", options =>
             {
-                options.ClientId = "b295f200-59d5-49e3-958b-29c136ea3a6e";
-                options.ClientSecret = "cy~7Q~uJcfswV6uc6wIKmsYtF4dJiCoVWWUdG";
+                options.ClientId = builder.Configuration["AzureAD:ClientID"];
+                options.ClientSecret = builder.Configuration["AzureAD:ClientSecret"];
                 options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
                 options.Authority = "https://login.microsoftonline.com/common/v2.0/";
                 options.TokenValidationParameters.IssuerValidator = AadIssuerValidator
@@ -108,14 +108,14 @@ internal static class HostingExtensions
             .AddFacebook("Facebook", "Sign in with Facebook", options =>
             {
                 options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-                options.AppId = "697778028244682";
-                options.AppSecret = "1ff283e349b09a161a9bbe7e6dc54f90";
+                options.AppId = builder.Configuration["Facebook:AppID"];
+                options.AppSecret = builder.Configuration["Facebook:AppSecret"];
             })
             .AddOpenIdConnect("Slack", "Sign in with Slack", options =>
             {
                 options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-                options.ClientId = "3341690290481.3352834550928";
-                options.ClientSecret = "ed0d466b89409430e6785b1faa9502a7";
+                options.ClientId = builder.Configuration["Slack:ClientID"];
+                options.ClientSecret = builder.Configuration["Slack:ClientSecret"];
                 options.ResponseType = "code";
                 options.CallbackPath = "/signin-slack";
                 options.Authority = "https://slack.com";
