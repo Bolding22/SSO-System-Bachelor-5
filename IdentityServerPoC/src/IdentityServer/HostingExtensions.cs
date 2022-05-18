@@ -40,8 +40,9 @@ internal static class HostingExtensions
 
         builder.Services.Configure<ForwardedHeadersOptions>(options =>
         {
-            options.ForwardedHeaders =
-                ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost;
+            options.ForwardedHeaders = ForwardedHeaders.All;
+            //options.KnownNetworks.Clear();
+            //options.KnownProxies.Clear();
         });
 
         builder.SetupUserDataStores();
@@ -148,7 +149,7 @@ internal static class HostingExtensions
                 options.Events.RaiseInformationEvents = true;
                 options.Events.RaiseFailureEvents = true;
                 options.Events.RaiseSuccessEvents = true;
-                options.IssuerUri = builder.Configuration["issuerUri"];
+                //options.IssuerUri = builder.Configuration["issuerUri"];
 
                 // see https://docs.duendesoftware.com/identityserver/v6/fundamentals/resources/
                 options.EmitStaticAudienceClaim = true;
@@ -186,6 +187,7 @@ internal static class HostingExtensions
     public static async Task<WebApplication> ConfigurePipeline(this WebApplication app)
     {
         app.UseForwardedHeaders();
+
         app.UseSerilogRequestLogging();
         
         if (_isContainerized)
@@ -195,11 +197,14 @@ internal static class HostingExtensions
         {
             app.UseDeveloperExceptionPage();
         }
+        else
+        {
+            app.UseHsts();
+        }
 
         await InitializeIdentityDatabase(app);
         await MigrateUserDb(app);
 
-        app.UseHsts();
         app.UseStaticFiles();
         app.UseRouting();
         app.UseIdentityServer();

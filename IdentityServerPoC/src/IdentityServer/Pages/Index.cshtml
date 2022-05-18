@@ -1,4 +1,5 @@
 @page
+@using Microsoft.AspNetCore.Http.Extensions
 @model IdentityServerAspNetIdentity.Pages.Home.Index
 
 <div class="welcome-page">
@@ -29,6 +30,21 @@
             Here are links to the
             <a href="https://github.com/duendesoftware/IdentityServer">source code repository</a>,
             and <a href="https://github.com/duendesoftware/samples">ready to use samples</a>.
+        </li>
+        <li>
+            Host: @Request.Host.ToString()
+        </li>
+        <li>
+            URL: @Request.GetDisplayUrl()
+        </li>
+        <li>
+            Headers:
+            <ul>
+               @foreach (var header in Request.Headers)
+               {
+                   <li>@header.ToString()</li>
+               } 
+            </ul>
         </li>
     </ul>
 </div>
