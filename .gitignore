@@ -366,11 +366,6 @@ appsettings.Development.json
 IdentityServerPoC/src/IdentityServerAspNetIdentity/appsettings.development.json
 IdentityServerPoC/src/WebClient/appsettings.development.json
 
-appsettings.json
-appsettings.json
-IdentityServerPoC/src/IdentityServerAspNetIdentity/appsettings.json
-IdentityServerPoC/src/WebClient/appsettings.json
-
 IdentityServerPoC/src/IdentityServerAspNetIdentity/keys
 *.crt
 *.csr
