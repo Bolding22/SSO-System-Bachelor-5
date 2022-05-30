@@ -31,7 +31,7 @@ builder.Services.AddAuthentication(options =>
     .AddCookie("Cookies")
     .AddOpenIdConnect("oidc", options =>
     {
-        options.Authority = authority;
+        options.Authority = builder.Configuration["Authority"];
 
         options.MetadataAddress = $"{builder.Configuration["IssuerUri"]}/.well-known/openid-configuration";
         options.RequireHttpsMetadata = false;
