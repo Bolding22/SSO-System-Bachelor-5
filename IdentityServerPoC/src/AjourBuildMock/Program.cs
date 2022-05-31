@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Shared;
+using WebClient;
 using WebClient.Authorization;
 using WebClient.Persistence;
-using WebClient.Persistence.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -75,23 +75,10 @@ builder.Services.AddAuthorization(options =>
     });
 });
 
-// Replace with your server version and type.
-// Use 'MariaDbServerVersion' for MariaDB.
-// Alternatively, use 'ServerVersion.AutoDetect(connectionString)'.
-// For common usages, see pull request #1233.
 var connectionString = builder.Configuration.GetConnectionString("ServiceProviderConnectionString");
 var serverVersion = ServerVersion.AutoDetect(connectionString);
 builder.Services.AddDbContext<ServiceProviderDbContext>(
-    optionsBuilder =>
-    {
-        optionsBuilder.UseMySql(connectionString, serverVersion);
-            // The following three options help with debugging, but should
-            // be changed or removed for production.
-            //.LogTo(Console.WriteLine, LogLevel.Information)
-            //.EnableSensitiveDataLogging()
-            //.EnableDetailedErrors();
-    }
-);
+    optionsBuilder => optionsBuilder.UseMySql(connectionString, serverVersion));
 
 // Uses user alias to authorize users
 builder.Services.AddSingleton<IAuthorizationHandler, UserExistsHandler>();
@@ -118,32 +105,3 @@ app.MapRazorPages().RequireAuthorization();
 SeedData.EnsureSeedData(app);
 
 app.Run();
-
-public static class SeedData
-{
-    public static void EnsureSeedData(WebApplication app)
-    {
-        using (var scope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
-        {
-            var dbContext = scope.ServiceProvider.GetRequiredService<ServiceProviderDbContext>();
-            
-            dbContext.Database.Migrate();
-            
-            var systemUserIdAlice = Guid.Parse("7243B8E0-7FD3-40D4-A46C-802D68BC0F76");
-            var aliceExists = dbContext.Users.Any(user => user.Id == systemUserIdAlice);
-
-            if (!aliceExists)
-            {
-                dbContext.Users.Add(new User()
-                {
-                    Id = systemUserIdAlice,
-                    FirstName = "Alice",
-                    LastName = "Doe",
-                    Email = "AliceSmith@email.com",
-                    PhoneNumber = "12345678"
-                });
-                dbContext.SaveChanges();
-            }
-        }
-    }
-}
