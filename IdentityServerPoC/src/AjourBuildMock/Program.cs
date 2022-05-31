@@ -50,7 +50,7 @@ builder.Services.AddAuthentication(options =>
             return Task.CompletedTask;
         };
 
-        options.ClientId = ClientIds.AjourServiceProvider;  // TODO: Should these be in a config file?
+        options.ClientId = ClientIds.AjourServiceProvider;
         options.ClientSecret = "secret";
         options.ResponseType = "code";
         

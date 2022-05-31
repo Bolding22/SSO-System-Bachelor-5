@@ -32,7 +32,7 @@ public class Index : PageModel
         var userAlias = new UserAlias()
         {
             SystemUserId =
-                Guid.NewGuid(), // TODO: This is baaaad. This can only be fixed when user aliases are placed on the Ajour Build SP.
+                Guid.NewGuid(),
             DirectoryId = id
         };
         _userDbContext.UserAliases.Add(userAlias);
