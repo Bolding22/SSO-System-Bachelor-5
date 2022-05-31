@@ -15,7 +15,8 @@ builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AuthorizeFolder("/", "UserExists")
         .AllowAnonymousToPage("/Index")
-        .AllowAnonymousToPage("/Signout");
+        .AllowAnonymousToPage("/Signout")
+        .AllowAnonymousToPage("/Account/AccessDenied");
     options.Conventions.AuthorizePage("/Signout");
 });
 
