@@ -16,5 +16,5 @@
     "IdentityConnection": "server=db;port=3306;database=ajour_sso_identityserver;user=root;password=example",
     "RedisCacheConnection": "cache:6379,password=,ssl=True,abortConnect=False"
   },
-  "IssuerUri": "https://idp"
+  "IssuerUri": "https://loadbalancer"
 }

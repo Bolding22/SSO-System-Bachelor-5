@@ -36,7 +36,10 @@ public class Index : PageModel
             DirectoryId = id
         };
         _userDbContext.UserAliases.Add(userAlias);
-        var user = await _userManager.GetUserAsync(User);
+        var userId = _userManager.GetUserId(User);
+        var user = await _userDbContext.Users
+            .Include(u => u.UserAliases)
+            .SingleAsync(u => u.Id == userId);
         user.UserAliases.Add(userAlias);
 
         await RemoveInvite(id);

@@ -49,17 +49,17 @@ services:
     restart: always
     environment:
       MARIADB_ROOT_PASSWORD: example
-    volumes:
-      - idp-db-volume:/var/lib/mysql
+    #volumes:
+    #  - idp-db-volume:/var/lib/mysql
     
-    # DB for the Service Provider
+  # DB for the Service Provider
   db-sp:
     image: mariadb
     restart: always
     environment:
       MARIADB_ROOT_PASSWORD: example
-    volumes:
-      - sp-db-volume:/var/lib/mysql
+    #volumes:
+    #  - sp-db-volume:/var/lib/mysql
   
   # Redis Cache
   cache:

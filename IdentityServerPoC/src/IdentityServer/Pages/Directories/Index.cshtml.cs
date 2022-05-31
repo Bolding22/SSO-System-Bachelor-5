@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 
 namespace IdentityServerAspNetIdentity.Pages.Organizations;
 
@@ -31,8 +32,11 @@ public class Index : PageModel
 
     private async Task BuildModelAsync()
     {
-        var user = await _userManager.GetUserAsync(User);
-
+        var userId = _userManager.GetUserId(User);
+        var user = await _userDbContext.Users
+            .Include(u => u.UserAliases)
+            .SingleAsync(u => u.Id == userId);
+        
         var directoryIds = user.UserAliases.Select(alias => alias.DirectoryId).ToList();
         if (user.HomeDirectoryId != null)
         {

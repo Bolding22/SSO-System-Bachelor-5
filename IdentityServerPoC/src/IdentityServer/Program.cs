@@ -19,17 +19,11 @@ try
     var app = await builder
         .ConfigureServices()
         .ConfigurePipeline();
-
-    // this seeding is only for the template to bootstrap the DB and users.
-    // in production you will likely want a different approach.
-    if (args.Contains("/seed"))
-    {
-        Console.WriteLine("Seeding database...");
-        SeedData.EnsureSeedData(app);
-        Console.WriteLine("Done seeding database. Exiting");
-        return;
-    }
-
+    
+    Console.WriteLine("Seeding database...");
+    SeedData.EnsureSeedData(app);
+    Console.WriteLine("Done seeding database. Exiting");
+    
     app.Run();
 }
 catch (Exception ex) when (ex.GetType().Name is not "StopTheHostException") // https://github.com/dotnet/runtime/issues/60600

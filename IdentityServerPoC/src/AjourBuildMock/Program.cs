@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Shared;
 using WebClient.Authorization;
 using WebClient.Persistence;
+using WebClient.Persistence.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -66,8 +67,11 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("UserExists", policy => 
-        policy.Requirements.Add(new UserExistsRequirement(Guid.Parse("68C450CF-A13F-4957-990D-E27E5DB8BD7B"))));
+    options.AddPolicy("UserExists", policy =>
+    {
+        var organizationId = Guid.Parse("68C450CF-A13F-4957-990D-E27E5DB8BD7B");
+        policy.Requirements.Add(new UserExistsRequirement(organizationId));
+    });
 });
 
 // Replace with your server version and type.
@@ -110,4 +114,35 @@ app.UseAuthorization();
 
 app.MapRazorPages().RequireAuthorization();
 
+SeedData.EnsureSeedData(app);
+
 app.Run();
+
+public static class SeedData
+{
+    public static void EnsureSeedData(WebApplication app)
+    {
+        using (var scope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<ServiceProviderDbContext>();
+            
+            dbContext.Database.Migrate();
+            
+            var systemUserIdAlice = Guid.Parse("7243B8E0-7FD3-40D4-A46C-802D68BC0F76");
+            var aliceExists = dbContext.Users.Any(user => user.Id == systemUserIdAlice);
+
+            if (!aliceExists)
+            {
+                dbContext.Users.Add(new User()
+                {
+                    Id = systemUserIdAlice,
+                    FirstName = "Alice",
+                    LastName = "Doe",
+                    Email = "AliceSmith@email.com",
+                    PhoneNumber = "12345678"
+                });
+                dbContext.SaveChanges();
+            }
+        }
+    }
+}
